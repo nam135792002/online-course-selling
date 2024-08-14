@@ -16,16 +16,15 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-//        httpSecurity.cors(cors->{
-//            cors.configurationSource(request -> {
-//                CorsConfiguration corsConfig = new CorsConfiguration();
-//                corsConfig.addAllowedOrigin("*");
-//                corsConfig.setAllowedOrigins(List.of("https://onlinecourse.up.railway.app"));
-//                corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-//                corsConfig.addAllowedHeader("*");
-//                return corsConfig;
-//            });
-//        });
+        httpSecurity.cors(cors->{
+            cors.configurationSource(request -> {
+                CorsConfiguration corsConfig = new CorsConfiguration();
+                corsConfig.addAllowedOrigin("*");
+                corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+                corsConfig.addAllowedHeader("*");
+                return corsConfig;
+            });
+        });
 
         httpSecurity.csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
