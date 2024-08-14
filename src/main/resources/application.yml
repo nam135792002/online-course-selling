@@ -6,3 +6,7 @@ spring:
     name: course-online-selling
   profiles:
     active: prod
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
