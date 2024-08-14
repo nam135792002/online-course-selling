@@ -7,32 +7,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CourseReturnHomePageResponse {
-
+public class CourseReturnDetailResponse {
     private Integer id;
 
     private String title;
 
     private String slug;
 
+    private String description;
+
     private String thumbnail;
 
     @JsonProperty("new_price")
     private long newPrice;
 
-    @JsonProperty("old_price")
-    private long oldPrice;
-
-    @JsonProperty("total_learners")
-    private int totalLearners;
-
-    @JsonProperty("category_name")
-    private String categoryName;
+    @JsonProperty("list_course_info")
+    private List<CourseInfoResponse> listCourseDetails = new ArrayList<>();
 }

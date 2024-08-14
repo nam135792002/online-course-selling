@@ -6,5 +6,5 @@ import vn.edu.likelion.entity.Course;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Integer> {
-
+    Course findCoursesBySlug(String slug);
 }

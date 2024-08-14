@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "courses")
 
@@ -41,6 +44,9 @@ public class Course {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseDetail> listCourseDetails = new ArrayList<>();
+
     public Course(String title, String slug, String description, String thumbnail, long newPrice, long oldPrice, Category category) {
         this.title = title;
         this.slug = slug;
@@ -49,5 +55,9 @@ public class Course {
         this.newPrice = newPrice;
         this.oldPrice = oldPrice;
         this.category = category;
+    }
+
+    public Course(Integer id) {
+        this.id = id;
     }
 }

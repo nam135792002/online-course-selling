@@ -3,6 +3,7 @@ package vn.edu.likelion.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.edu.likelion.model.course.CourseReturnHomePageResponse;
@@ -20,5 +21,10 @@ public class CourseController {
         List<CourseReturnHomePageResponse> listCourses = courseService.listCourseReturnHomePage();
         if (listCourses.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(listCourses);
+    }
+
+    @GetMapping("/get/{slug}")
+    public ResponseEntity<?> getDetailCourse(@PathVariable(value = "slug") String slug){
+        return ResponseEntity.ok(courseService.getCourseDetail(slug));
     }
 }

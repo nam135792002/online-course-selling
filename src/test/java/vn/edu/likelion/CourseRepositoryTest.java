@@ -8,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 import vn.edu.likelion.entity.Category;
 import vn.edu.likelion.entity.Course;
+import vn.edu.likelion.entity.CourseDetail;
+import vn.edu.likelion.entity.InformationType;
 import vn.edu.likelion.repository.CourseRepository;
 
 import java.util.List;
@@ -74,5 +76,290 @@ public class CourseRepositoryTest {
         List<Course> listCourses = courseRepository.saveAll(List.of(course1, course2, course3, course4, course5, course6,
                 course7, course8, course9, course10));
         Assertions.assertThat(listCourses).hasSize(10);
+    }
+
+    @Test
+    public void testCreateCourseDetail1(){
+        Course course = courseRepository.findById(1).get();
+
+        course.getListCourseDetails().add(new CourseDetail("Learn the core Java skills needed to apply for Java developer positions in just 14 hours.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Be able to demonstrate your understanding of Java to future employers.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Acquire essential java basics for transitioning to the Spring Framework, Java EE, Android development and more.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Be able to sit for and pass the Oracle Java Certificate exam if you choose.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Obtain proficiency in Java 17, as well as older versions including Java 11 and Java 8.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Learn industry \"best practices\" in Java software development from a professional Java developer who has worked in the language for close to 25 years.",
+                InformationType.TARGET, course));
+
+        course.getListCourseDetails().add(new CourseDetail("A computer with either Windows, Mac or Linux to install all the free software and tools needed to build your new apps (I provide specific videos on installations for each platform).",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("A strong work ethic, willingness to learn, and plenty of excitement about the awesome new programs you’re about to build.",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("Nothing else! It’s just you, your computer and your hunger to get started today.",
+                InformationType.REQUIREMENT, course));
+
+
+        Course savedCourse = courseRepository.save(course);
+        Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testCreateCourseDetail2(){
+        Course course = courseRepository.findById(2).get();
+
+        course.getListCourseDetails().add(new CourseDetail("Students will learn Objet Oriented Programming using C++ Language.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Students will learn Exception Handling in C++.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Students will learn how to use ChatGPT for Development.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Students will learn File Handling in C++.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Students will learn Standard Template Library in C++.",
+                InformationType.TARGET, course));
+
+        course.getListCourseDetails().add(new CourseDetail("A computer with either Windows, Mac or Linux to install all the free software and tools needed to build your new apps (I provide specific videos on installations for each platform).",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("There is no hard requirement of knowledge of any programming language. Knowledge of C language will help students to understand this course in better way but it is not mandatory.",
+                InformationType.REQUIREMENT, course));
+
+
+        Course savedCourse = courseRepository.save(course);
+        Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testCreateCourseDetail3(){
+        Course course = courseRepository.findById(3).get();
+
+        course.getListCourseDetails().add(new CourseDetail("You will gain an in-depth understanding of C#.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You will understand the principles of object-oriented programming.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You will learn to write code of excellent quality.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You will practice your skills by solving exercises in the browser, as well as by creating advanced projects.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You will learn how to create unit tests using NUnit and Moq libraries.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You will understand how to write high-performance C# code.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You will learn the most useful design patterns.",
+                InformationType.TARGET, course));
+
+        course.getListCourseDetails().add(new CourseDetail("No programming experience is needed. I'll teach you everything you need to know.",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("A computer (Windows/macOS) with an access to the Internet.",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("No paid software is needed; all tools used in this course are free.",
+                InformationType.REQUIREMENT, course));
+
+        Course savedCourse = courseRepository.save(course);
+        Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testCreateCourseDetail4(){
+        Course course = courseRepository.findById(4).get();
+
+        course.getListCourseDetails().add(new CourseDetail("Become an advanced, confident, and modern JavaScript developer from scratch",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("JavaScript fundamentals: variables, if/else, operators, boolean logic, functions, arrays, objects, loops, strings, etc.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Modern OOP: Classes, constructors, prototypal inheritance, encapsulation, etc.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Asynchronous JavaScript: Event loop, promises, async/await, AJAX calls and APIs",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Modern tools for 2022 and beyond: NPM, Parcel, Babel and ES6 modules",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Build 6 beautiful real-world projects for your portfolio (not boring toy apps)",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("How to think and work like a developer: problem-solving, researching, workflows",
+                InformationType.TARGET, course));
+
+        course.getListCourseDetails().add(new CourseDetail("No coding experience is necessary to take this course! I take you from beginner to expert!",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("Any computer and OS will work — Windows, macOS or Linux. We will set up your text editor the course.",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("A basic understanding of HTML and CSS is a plus, but not a must! The course includes an HTML and CSS crash course.",
+                InformationType.REQUIREMENT, course));
+
+        Course savedCourse = courseRepository.save(course);
+        Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testCreateCourseDetail5(){
+        Course course = courseRepository.findById(5).get();
+
+        course.getListCourseDetails().add(new CourseDetail("Build 16 web development projects for your portfolio, ready to apply for junior developer jobs.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("After the course you will be able to build ANY website you want.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Learn the latest technologies, including Javascript, React, Node and even Web3 development.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Build fully-fledged websites and web apps for your startup or business.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Master frontend development with React",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Learn professional developer best practices.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Master backend development with Node",
+                InformationType.TARGET, course));
+
+        course.getListCourseDetails().add(new CourseDetail("No programming experience needed - I'll teach you everything you need to know",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("A computer with access to the internet",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("I'll walk you through, step-by-step how to get all the software installed and set up",
+                InformationType.REQUIREMENT, course));
+
+        Course savedCourse = courseRepository.save(course);
+        Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testCreateCourseDetail6(){
+        Course course = courseRepository.findById(6).get();
+
+        course.getListCourseDetails().add(new CourseDetail("Build beautifully designed web and mobile projects for your customers using modern tools used by top companies in 2023",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("After the course you will be able to build ANY website you want.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Includes 100+ assets and premium design templates that you can keep and use to customize for all your future projects",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Have an amazing design portfolio customized and professionally completed by the end of the course (we provide it for you!)",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Get hired as a Designer or become a freelancer that can work from anywhere and for anyone. Designers are in high demand!",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Master Figma for your design needs then learn to convert your designs into a live HTML an CSS website",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Learn to use HTML5 and CSS3 to make your designs come to life and create fully working websites",
+                InformationType.TARGET, course));
+
+        course.getListCourseDetails().add(new CourseDetail("No requirements. We teach you and show you everything from scratch! From Zero to Mastery",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("Get ready to fall in love with Design and making everything you touch into beautiful projects for the rest of your life!",
+                InformationType.REQUIREMENT, course));
+
+        Course savedCourse = courseRepository.save(course);
+        Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testCreateCourseDetail7(){
+        Course course = courseRepository.findById(7).get();
+
+        course.getListCourseDetails().add(new CourseDetail("Build a RESTful Web Service with Spring Boot",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Learn how to implement User Sign-up functionality",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Protect RESTful Web Service with Spring Security Framework",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Implement Password Reset and Email Verification features",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Learn how to implement Token-Based Authentication",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Use Spring Data JPA Query Methods",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Create new project using Spring Tool Suite and Spring Initializer",
+                InformationType.TARGET, course));
+
+        course.getListCourseDetails().add(new CourseDetail("Basic knowledge of Java",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("Mac computer",
+                InformationType.REQUIREMENT, course));
+
+        Course savedCourse = courseRepository.save(course);
+        Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testCreateCourseDetail8(){
+        Course course = courseRepository.findById(8).get();
+
+        course.getListCourseDetails().add(new CourseDetail("You will create a portfolio of 15 apps to be able apply for junior developer jobs at a technology company",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You will learn by doing, where every lesson is incorporated into a real-world app project.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You will learn Xcode, UIKit and SwiftUI, ARKit, CoreML and CoreData.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("After the course, you will be able to build any app you want.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Become a digital nomad by working as a freelance iOS developer",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Create apps that use Machine Learning using Apple’s new CoreML",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Master app marketing so you can publish your apps and generate downloads",
+                InformationType.TARGET, course));
+
+        course.getListCourseDetails().add(new CourseDetail("A Mac computer running macOS 10.15 (Catalina) or a PC running macOS.",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("No programming experience needed - I'll teach you everything you need to know",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("No paid software required - all apps will be created in Xcode 11 (which is free to download)",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("I'll walk you through, step-by-step how to get Xcode installed and set up",
+                InformationType.REQUIREMENT, course));
+
+        Course savedCourse = courseRepository.save(course);
+        Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testCreateCourseDetail9(){
+        Course course = courseRepository.findById(9).get();
+
+        course.getListCourseDetails().add(new CourseDetail("You can build any Android app you can think of. No matter if it is an idea that you or your friends have, or if it is a contract job that you need to develop.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You Will Be Proficient in XML",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You'll be able to work as an Android freelancer and work from anywere in the world.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You'll be able to develop cloud apps using Google Firebase",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You will build Apps for your portfolio to apply for jr. Android developer Jobs.",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("You Will Be Proficient using Jetpack Compose",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Publish your apps on Google Play and generate revenue with Google Pay and Google Ads",
+                InformationType.TARGET, course));
+
+        course.getListCourseDetails().add(new CourseDetail("A Windows, Mac or Linux Computer",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("No Programming knowledge required - I'll teach you everything you need to know",
+                InformationType.REQUIREMENT, course));
+
+        Course savedCourse = courseRepository.save(course);
+        Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testCreateCourseDetail10(){
+        Course course = courseRepository.findById(10).get();
+
+        course.getListCourseDetails().add(new CourseDetail("Learn Flutter and Dart from the ground up, step-by-step",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Use features like Google Maps, the device camera, authentication and much more!",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Learn all the basics without stopping after them: Dive deeply into Flutter & Dart and become an advanced developer",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Build engaging native mobile apps for both Android and iOS",
+                InformationType.TARGET, course));
+        course.getListCourseDetails().add(new CourseDetail("Learn how to upload images and how to send manual and automated push notifications",
+                InformationType.TARGET, course));
+
+
+        course.getListCourseDetails().add(new CourseDetail("Basic programming language will help but is not a must-have",
+                InformationType.REQUIREMENT, course));
+        course.getListCourseDetails().add(new CourseDetail("You can use either Windows, macOS or Linux for Android app development - iOS apps can only be built on macOS though",
+                InformationType.REQUIREMENT, course));
+
+        Course savedCourse = courseRepository.save(course);
+        Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
     }
 }
