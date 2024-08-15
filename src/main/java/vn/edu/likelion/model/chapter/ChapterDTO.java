@@ -18,7 +18,8 @@ public class ChapterDTO {
     private Integer id;
 
     @JsonProperty("chapter_title")
-    private String chapterTitle;
+    private String name;
 
-    private List<LessonDTO> lessons = new ArrayList<>();
+    @JsonProperty("lessons")
+    private List<LessonDTO> listLessons = new ArrayList<>();
 }

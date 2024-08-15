@@ -33,5 +33,6 @@ public class CourseReturnDetailResponse {
 
     private List<String> require = new ArrayList<>();
 
-    private List<ChapterDTO> chapter = new ArrayList<>();
+    @JsonProperty("chapter")
+    private List<ChapterDTO> listChapters = new ArrayList<>();
 }

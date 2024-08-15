@@ -16,7 +16,7 @@ public class LessonDTO {
     private Integer id;
 
     @JsonProperty("lesson_title")
-    private String lessonTitle;
+    private String name;
 
     private LocalTime duration;
 
