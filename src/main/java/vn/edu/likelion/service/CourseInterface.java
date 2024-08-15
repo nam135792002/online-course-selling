@@ -1,6 +1,5 @@
 package vn.edu.likelion.service;
 
-import vn.edu.likelion.model.course.CourseInfoResponse;
 import vn.edu.likelion.model.course.CourseReturnDetailResponse;
 import vn.edu.likelion.model.course.CourseReturnHomePageResponse;
 

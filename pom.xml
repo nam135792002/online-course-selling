@@ -86,6 +86,18 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-core</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ws.schild</groupId>
+            <artifactId>jave-all-deps</artifactId>
+            <version>3.2.0</version>
+        </dependency>
     </dependencies>
 
     <build>

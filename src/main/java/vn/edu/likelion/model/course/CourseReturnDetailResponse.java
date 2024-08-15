@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.edu.likelion.entity.Chapter;
+import vn.edu.likelion.model.chapter.ChapterDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +22,16 @@ public class CourseReturnDetailResponse {
 
     private String slug;
 
-    private String description;
+    private String decs;
 
     private String thumbnail;
 
     @JsonProperty("new_price")
     private long newPrice;
 
-    @JsonProperty("list_course_info")
-    private List<CourseInfoResponse> listCourseDetails = new ArrayList<>();
+    private List<String> target = new ArrayList<>();
+
+    private List<String> require = new ArrayList<>();
+
+    private List<ChapterDTO> chapter = new ArrayList<>();
 }
