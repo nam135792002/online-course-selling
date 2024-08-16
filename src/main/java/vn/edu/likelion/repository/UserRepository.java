@@ -10,7 +10,7 @@ import vn.edu.likelion.entity.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsUserByEmail(String email);
     @Modifying
-    @Query("update User u set u.verificationCode = null, u.enabled = true where u.email = ?1")
+    @Query("update User u set u.enabled = true where u.email = ?1")
     void enable(String email);
     User findUserByEmail(String email);
 }

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "users")
@@ -37,9 +36,6 @@ public class User {
     private LocalDate createdTime;
 
     private boolean enabled;
-
-    @Column(name = "verification_code", length = 64)
-    private String verificationCode;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")

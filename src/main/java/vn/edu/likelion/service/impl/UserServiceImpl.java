@@ -3,7 +3,6 @@ package vn.edu.likelion.service.impl;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -46,30 +45,23 @@ public class UserServiceImpl implements UserInterface {
         user.setRole(new Role(1));
         user.setEnabled(false);
 
-        String randomCode = RandomString.make(64);
-        user.setVerificationCode(randomCode);
-
-        String verifyURL = AppConstant.HOST + "/api/users/verify?code=" + randomCode + "&email=" + user.getEmail();
-
-        sendEmail(verifyURL, user);
+        sendEmail(user);
         User savedUser = userRepository.save(user);
-        return modelMapper.map(user, UserRegisterResponse.class);
+        return modelMapper.map(savedUser, UserRegisterResponse.class);
     }
 
     @Override
-    public String verifyEmail(String email, String verificationCode) {
+    public String verifyEmail(String email) {
         User user = userRepository.findUserByEmail(email);
 
         if(user == null) throw new ResourceNotFoundException("User", "Email", email);
-        else if(user.getVerificationCode() == null) throw new ApiException(HttpStatus.BAD_REQUEST, "Link xác nhận đã được kích hoạt");
-        else if ((user.getVerificationCode().equals(verificationCode))){
+        else{
             userRepository.enable(email);
             return "Xác nhận email thành công.";
         }
-        else throw new ApiException(HttpStatus.BAD_REQUEST, "Sai link xác nhận");
     }
 
-    private void sendEmail(String url, User user){
+    private void sendEmail(User user){
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
@@ -101,7 +93,7 @@ public class UserServiceImpl implements UserInterface {
         content = content.replace("[[name]]",user.getFullName());
 
 
-        content = content.replace("[[URL]]",url);
+        content = content.replace("[[URL]]", "http://127.0.0.1:5500/Frontend/pages/Default/index.html");
         try {
             helper.setText(content,true);
         } catch (MessagingException e) {

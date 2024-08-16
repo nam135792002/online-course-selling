@@ -19,6 +19,7 @@ public class LoginDTO {
     @Length(min = 5, max = 30, message = "Email have to 5-30 characters")
     private String email;
 
-
+    @NotEmpty(message = "Password can not be empty")
+    @Length(min = 8, max = 64, message = "Password have to 8-64 characters")
     private String password;
 }
