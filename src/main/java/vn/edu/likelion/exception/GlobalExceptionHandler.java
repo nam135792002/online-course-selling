@@ -8,61 +8,83 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import vn.edu.likelion.model.ErrorDetails;
 
 import java.nio.file.AccessDeniedException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     // handle specific exception
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException exception,
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorDetails handleResourceNotFoundException(ResourceNotFoundException exception,
                                                                         WebRequest webRequest){
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setTimestamp(LocalDateTime.now());
+        errorDetails.setPath(webRequest.getDescription(false));
+        errorDetails.setStatus(HttpStatus.NOT_FOUND.value());
+        errorDetails.addError(exception.getMessage());
+        return errorDetails;
     }
 
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ErrorDetails> handleBlogAPIException(ApiException exception,
+    public ResponseEntity<?> handleAPIException(ApiException exception,
                                                                WebRequest webRequest){
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setTimestamp(LocalDateTime.now());
+        errorDetails.setPath(webRequest.getDescription(false));
+        errorDetails.setStatus(exception.getStatus().value());
+        errorDetails.addError(exception.getMessage());
         return new ResponseEntity<>(errorDetails, exception.getStatus());
     }
 
     // global exception
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDetails> handleGlobalException(Exception exception,
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorDetails handleGlobalException(Exception exception,
                                                                WebRequest webRequest){
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setTimestamp(LocalDateTime.now());
+        errorDetails.setPath(webRequest.getDescription(false));
+        errorDetails.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorDetails.addError(exception.getMessage());
+        return errorDetails;
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+                                                                  HttpStatusCode status, WebRequest request) {
 
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            errors.put(fieldName,message);
-        });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setTimestamp(LocalDateTime.now());
+        errorDetails.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorDetails.setPath(((ServletWebRequest) request).getRequest().getServletPath());
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        fieldErrors.forEach(fieldError -> errorDetails.addError(fieldError.getDefaultMessage()));
+        return new ResponseEntity<>(errorDetails, headers, status);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorDetails> handleAccessDeniedException(AccessDeniedException exception,
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ErrorDetails handleAccessDeniedException(AccessDeniedException exception,
                                                                         WebRequest webRequest){
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setTimestamp(LocalDateTime.now());
+        errorDetails.setPath(webRequest.getDescription(false));
+        errorDetails.setStatus(HttpStatus.UNAUTHORIZED.value());
+        errorDetails.addError(exception.getMessage());
+        return errorDetails;
     }
 }
