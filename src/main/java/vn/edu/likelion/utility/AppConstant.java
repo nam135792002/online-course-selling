@@ -1,7 +1,7 @@
 package vn.edu.likelion.utility;
 
 public class AppConstant {
-    public final static String HOST = "http://localhost:9999";
+    public final static String HOST = "https://onlinecourse.up.railway.app";
     public final static String SUBJECT_REGISTER = "Please verify your registration to continue";
     public final static String CONTENT_REGISTER = "<div style=\"font-size: 16px; letter-spacing: normal;\">Dear [[name]]," +
             "</div><div style=\"font-size: 16px; letter-spacing: normal;\"><i><br></i></div>" +

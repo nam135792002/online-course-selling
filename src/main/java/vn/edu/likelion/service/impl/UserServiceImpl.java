@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.edu.likelion.entity.Role;
 import vn.edu.likelion.entity.User;
 import vn.edu.likelion.exception.ApiException;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 import java.util.Properties;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserInterface {
     @Autowired private UserRepository userRepository;
     @Autowired private ModelMapper modelMapper;
@@ -60,7 +62,10 @@ public class UserServiceImpl implements UserInterface {
 
         if(user == null) throw new ResourceNotFoundException("User", "Email", email);
         else if(user.getVerificationCode() == null) throw new ApiException(HttpStatus.BAD_REQUEST, "Link xác nhận đã được kích hoạt");
-        else if ((user.getVerificationCode().equals(verificationCode))) return "Xác nhận email thành công.";
+        else if ((user.getVerificationCode().equals(verificationCode))){
+            userRepository.enable(email);
+            return "Xác nhận email thành công.";
+        }
         else throw new ApiException(HttpStatus.BAD_REQUEST, "Sai link xác nhận");
     }
 
