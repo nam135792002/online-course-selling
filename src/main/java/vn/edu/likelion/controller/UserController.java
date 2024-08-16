@@ -20,7 +20,7 @@ public class UserController {
         return new ResponseEntity<>(userService.addUser(userRegisterRequest), HttpStatus.CREATED);
     }
 
-    @PostMapping("/verify")
+    @GetMapping("/verify")
     public ResponseEntity<?> verify(@RequestParam(value = "code") String verificationCode,
                                     @RequestParam(value = "email") String email){
         return ResponseEntity.ok(userService.verifyEmail(email, verificationCode));
