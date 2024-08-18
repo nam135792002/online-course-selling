@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,12 +14,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import vn.edu.likelion.model.ErrorDetails;
 
-import java.nio.file.AccessDeniedException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -41,11 +41,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleAPIException(ApiException exception,
                                                                WebRequest webRequest){
         ErrorDetails errorDetails = new ErrorDetails();
+        CustomHttpStatus customHttpStatus = exception.getCustomHttpStatus();
         errorDetails.setTimestamp(LocalDateTime.now());
         errorDetails.setPath(webRequest.getDescription(false));
-        errorDetails.setStatus(exception.getStatus().value());
-        errorDetails.addError(exception.getMessage());
-        return new ResponseEntity<>(errorDetails, exception.getStatus());
+        errorDetails.setStatus(customHttpStatus.getCode());
+        errorDetails.addError(customHttpStatus.getMessage());
+        return new ResponseEntity<>(errorDetails, customHttpStatus.getHttpStatusCode());
     }
 
     // global exception
@@ -75,16 +76,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, headers, status);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ResponseBody
-    public ErrorDetails handleAccessDeniedException(AccessDeniedException exception,
-                                                                        WebRequest webRequest){
-        ErrorDetails errorDetails = new ErrorDetails();
-        errorDetails.setTimestamp(LocalDateTime.now());
-        errorDetails.setPath(webRequest.getDescription(false));
-        errorDetails.setStatus(HttpStatus.UNAUTHORIZED.value());
-        errorDetails.addError(exception.getMessage());
-        return errorDetails;
-    }
 }

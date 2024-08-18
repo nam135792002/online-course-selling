@@ -24,4 +24,14 @@ public class UserController {
     public ResponseEntity<?> verify(@RequestParam(value = "email") String email){
         return ResponseEntity.ok(userService.verifyEmail(email));
     }
+
+    @GetMapping("/my-info")
+    public ResponseEntity<?> myInfo(){
+        return ResponseEntity.ok(userService.getMyInfo());
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(){
+        return ResponseEntity.ok("Success");
+    }
 }

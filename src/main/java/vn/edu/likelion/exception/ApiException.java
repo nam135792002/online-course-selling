@@ -1,28 +1,15 @@
 package vn.edu.likelion.exception;
 
-import org.springframework.http.HttpStatus;
+import lombok.Data;
+import lombok.Getter;
 
+@Getter
 public class ApiException extends RuntimeException{
-    private HttpStatus status;
-    private String message;
 
-    public ApiException(HttpStatus status, String message) {
-        this.status = status;
-        this.message = message;
-    }
+    private CustomHttpStatus customHttpStatus;
 
-    public ApiException(String message, HttpStatus status, String message1) {
-        super(message);
-        this.status = status;
-        this.message = message1;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
+    public ApiException(CustomHttpStatus customHttpStatus) {
+        super(customHttpStatus.getMessage());
+        this.customHttpStatus = customHttpStatus;
     }
 }

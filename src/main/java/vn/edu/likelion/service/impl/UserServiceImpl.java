@@ -7,13 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.edu.likelion.entity.Role;
 import vn.edu.likelion.entity.User;
 import vn.edu.likelion.exception.ApiException;
+import vn.edu.likelion.exception.CustomHttpStatus;
 import vn.edu.likelion.exception.ResourceNotFoundException;
+import vn.edu.likelion.model.user.UserInfoResponse;
 import vn.edu.likelion.model.user.UserRegisterRequest;
 import vn.edu.likelion.model.user.UserRegisterResponse;
 import vn.edu.likelion.repository.UserRepository;
@@ -35,14 +38,14 @@ public class UserServiceImpl implements UserInterface {
     public UserRegisterResponse addUser(UserRegisterRequest userRegisterRequest) {
         User user = modelMapper.map(userRegisterRequest, User.class);
         if(userRepository.existsUserByEmail(user.getEmail())){
-            throw new ApiException(HttpStatus.CONFLICT, "Email đã đăng ký trước đó");
+            throw new ApiException(CustomHttpStatus.EMAIL_EXISTED);
         }
         String passEncode = passwordEncoder.encode(userRegisterRequest.getPassword());
 
         user.setAvatar("https://res.cloudinary.com/dqnoopa0x/image/upload/v1723775424/lsorq9sodc5qiey5nuhx.png");
         user.setPassword(passEncode);
         user.setCreatedTime(LocalDate.now());
-        user.setRole(new Role(1));
+        user.setRole(new Role(2));
         user.setEnabled(false);
 
         sendEmail(user);
@@ -59,6 +62,17 @@ public class UserServiceImpl implements UserInterface {
             userRepository.enable(email);
             return "Xác nhận email thành công.";
         }
+    }
+
+    @Override
+    public UserInfoResponse getMyInfo() {
+        var context = SecurityContextHolder.getContext();
+        String email = context.getAuthentication().getName();
+
+        User user = userRepository.findUserByEmail(email);
+        if(user == null) throw new ApiException(CustomHttpStatus.EMAIL_NOT_EXISTED);
+
+        return modelMapper.map(user, UserInfoResponse.class);
     }
 
     private void sendEmail(User user){
@@ -84,7 +98,7 @@ public class UserServiceImpl implements UserInterface {
             helper.setTo(toAddress);
             helper.setSubject(AppConstant.SUBJECT_REGISTER);
         } catch (MessagingException | UnsupportedEncodingException e) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Send email failed!");
+            throw new ApiException(CustomHttpStatus.ERROR_SEND_EMAIL);
         }
 
         String content = AppConstant.CONTENT_REGISTER;
@@ -97,7 +111,7 @@ public class UserServiceImpl implements UserInterface {
         try {
             helper.setText(content,true);
         } catch (MessagingException e) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Send email failed!");
+            throw new ApiException(CustomHttpStatus.ERROR_SEND_EMAIL);
         }
         mailSender.send(message);
     }

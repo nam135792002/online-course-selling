@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginDTO {
+public class AuthenticationRequest {
 
     @NotEmpty(message = "Email can not be empty")
     @Email(message = "Must be a well-formed email address")
