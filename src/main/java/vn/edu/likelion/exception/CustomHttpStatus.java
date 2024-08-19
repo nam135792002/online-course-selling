@@ -12,7 +12,9 @@ public enum CustomHttpStatus {
     UNAUTHENTICATED(1004, "Unauthenticated",HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1005, "Bạn không có quyền truy cập",HttpStatus.FORBIDDEN),
     TOKEN_INVALID(1006, "Sai token",HttpStatus.UNAUTHORIZED),
-    EXPIRED_TOKEN(1007, "Đã hết hạn phiên đăng nhập", HttpStatus.UNAUTHORIZED);
+    EXPIRED_TOKEN(1007, "Đã hết hạn phiên đăng nhập", HttpStatus.UNAUTHORIZED),
+    USER_NOT_ACTIVE(1008, "Email chưa được xác thực", HttpStatus.UNAUTHORIZED),
+    PASSWORD_INVALID(1009, "Sai mật khẩu",HttpStatus.UNAUTHORIZED);
 
 
 

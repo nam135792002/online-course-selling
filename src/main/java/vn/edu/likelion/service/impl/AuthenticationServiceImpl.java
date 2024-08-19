@@ -48,11 +48,11 @@ public class AuthenticationServiceImpl implements AuthenticationInterface {
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
         var user = userRepository.findUserByEmail(authenticationRequest.getEmail());
         if(user == null) throw new ApiException(CustomHttpStatus.EMAIL_NOT_EXISTED);
-
+        if(!user.isEnabled()) throw new ApiException(CustomHttpStatus.USER_NOT_ACTIVE);
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(),
                 user.getPassword());
 
-        if(!authenticated) throw new ApiException((CustomHttpStatus.UNAUTHENTICATED));
+        if(!authenticated) throw new ApiException((CustomHttpStatus.PASSWORD_INVALID));
         var token = generateToken(user);
         return new AuthenticationResponse(token);
     }

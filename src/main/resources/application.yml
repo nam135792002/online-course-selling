@@ -13,5 +13,15 @@ springdoc:
 
 jwt:
   signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
-  valid-duration: 20
-  refreshable-duration: 120
+  valid-duration: 3600
+  refreshable-duration: 7200
+
+payment:
+  vnPay:
+    url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+    tmnCode: "HUWJVPVM"
+    secretKey: "JTQDOZVNOADCXAQDJTKVQDJXOPTJTPLF"
+    returnUrl: "http://localhost:9999/api/orders/vn-pay-callback"
+    version: "2.1.0"
+    command: "pay"
+    orderType: "other"

@@ -50,6 +50,9 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chapter> listChapters = new ArrayList<>();
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> listOrders = new ArrayList<>();
+
     public Course(String title, String slug, String description, String thumbnail, long newPrice, long oldPrice, Category category) {
         this.title = title;
         this.slug = slug;
