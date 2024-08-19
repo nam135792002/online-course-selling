@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import vn.edu.likelion.model.payment.PaymentDTO;
 import vn.edu.likelion.service.impl.OrderServiceImpl;
 
+import java.io.UnsupportedEncodingException;
+
 @RestController
 @RequestMapping("/api/orders")
 @CrossOrigin
@@ -20,7 +22,7 @@ public class OrderController {
     }
 
     @GetMapping("/vn-pay")
-    public ResponseEntity<?> pay(HttpServletRequest request){
+    public ResponseEntity<?> pay(HttpServletRequest request) throws UnsupportedEncodingException {
         return ResponseEntity.ok(orderService.createVnPayPayment(request));
     }
 

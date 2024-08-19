@@ -19,8 +19,8 @@ jwt:
 payment:
   vnPay:
     url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
-    tmnCode: "43N4HNST"
-    secretKey: "MDXBMWH56AG650LWSL24XT9X8FN669AA"
+    tmnCode: "HUWJVPVM"
+    secretKey: "JTQDOZVNOADCXAQDJTKVQDJXOPTJTPLF"
     returnUrl: "http://127.0.0.1:3000/Frontend/pages/Process_Payment/Process_Payment.html"
     version: "2.1.0"
     command: "pay"
