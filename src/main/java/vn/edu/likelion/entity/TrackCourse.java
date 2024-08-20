@@ -34,4 +34,9 @@ public class TrackCourse {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lesson_id")
     private Lesson lesson;
+
+    public TrackCourse(User user, Lesson lesson) {
+        this.user = user;
+        this.lesson = lesson;
+    }
 }

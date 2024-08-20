@@ -4,12 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import vn.edu.likelion.config.VNPayConfig;
-import vn.edu.likelion.entity.Course;
-import vn.edu.likelion.entity.Order;
-import vn.edu.likelion.entity.User;
+import vn.edu.likelion.entity.*;
 import vn.edu.likelion.exception.ApiException;
 import vn.edu.likelion.exception.CustomHttpStatus;
 import vn.edu.likelion.exception.ResourceNotFoundException;
@@ -18,12 +15,14 @@ import vn.edu.likelion.model.order.OrderResponse;
 import vn.edu.likelion.model.payment.PaymentDTO;
 import vn.edu.likelion.repository.CourseRepository;
 import vn.edu.likelion.repository.OrderRepository;
+import vn.edu.likelion.repository.TrackCourseRepository;
 import vn.edu.likelion.repository.UserRepository;
 import vn.edu.likelion.service.OrderInterface;
 import vn.edu.likelion.utility.AppConstant;
 import vn.edu.likelion.utility.VNPayUtility;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +34,7 @@ public class OrderServiceImpl implements OrderInterface {
     @Autowired private UserRepository userRepository;
     @Autowired private CourseRepository courseRepository;
     @Autowired private ModelMapper modelMapper;
+    @Autowired private TrackCourseRepository trackCourseRepository;
 
     @Override
     public PaymentDTO createVnPayPayment(HttpServletRequest request) {
@@ -72,6 +72,16 @@ public class OrderServiceImpl implements OrderInterface {
                 user, course);
 
         Order savedOrder = orderRepository.save(order);
+
+        List<TrackCourse> listTrackCourses = new ArrayList<>();
+        TrackCourse trackCourse = null;
+        for (Chapter chapter : course.getListChapters()){
+            for (Lesson lesson : chapter.getListLessons()){
+                trackCourse = new TrackCourse(user, lesson);
+                listTrackCourses.add(trackCourse);
+            }
+        }
+        trackCourseRepository.saveAll(listTrackCourses);
 
         return convertEntityToResponse(savedOrder);
     }
