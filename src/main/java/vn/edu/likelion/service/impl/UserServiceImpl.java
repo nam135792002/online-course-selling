@@ -66,8 +66,7 @@ public class UserServiceImpl implements UserInterface {
 
     @Override
     public UserInfoResponse getMyInfo() {
-        var context = SecurityContextHolder.getContext();
-        String email = context.getAuthentication().getName();
+        String email = AppConstant.getEmailFromContextHolder();
 
         User user = userRepository.findUserByEmail(email);
         if(user == null) throw new ApiException(CustomHttpStatus.EMAIL_NOT_EXISTED);

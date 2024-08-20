@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.edu.likelion.model.payment.PaymentDTO;
+import vn.edu.likelion.model.order.OrderRequest;
 import vn.edu.likelion.service.impl.OrderServiceImpl;
-
-import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -16,24 +14,18 @@ import java.io.UnsupportedEncodingException;
 public class OrderController {
     @Autowired private OrderServiceImpl orderService;
 
-    @PostMapping("/buy")
-    public ResponseEntity<?> order(){
-        return new ResponseEntity<>("Success", HttpStatus.CREATED);
+    @PostMapping("/create")
+    public ResponseEntity<?> add(@RequestBody OrderRequest orderRequest){
+        return new ResponseEntity<>(orderService.createOrder(orderRequest), HttpStatus.CREATED);
     }
 
     @GetMapping("/vn-pay")
-    public ResponseEntity<?> pay(HttpServletRequest request) throws UnsupportedEncodingException {
+    public ResponseEntity<?> pay(HttpServletRequest request){
         return ResponseEntity.ok(orderService.createVnPayPayment(request));
     }
 
-    @GetMapping("/vn-pay-callback")
-    public ResponseEntity<?> payCallbackHandler(HttpServletRequest request) {
-        String status = request.getParameter("vnp_ResponseCode");
-        if (status.equals("00")) {
-
-            return ResponseEntity.ok(new PaymentDTO("00", "Success", ""));
-        } else {
-            return new ResponseEntity<>(new PaymentDTO("1009", "Failed", ""), HttpStatus.BAD_REQUEST);
-        }
+    @GetMapping("/my-course")
+    public ResponseEntity<?> getAllMyCourse(){
+        return ResponseEntity.ok(orderService.getMyCourse());
     }
 }

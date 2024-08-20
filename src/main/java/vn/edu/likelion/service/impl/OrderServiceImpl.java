@@ -2,18 +2,39 @@ package vn.edu.likelion.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import vn.edu.likelion.config.VNPayConfig;
+import vn.edu.likelion.entity.Course;
+import vn.edu.likelion.entity.Order;
+import vn.edu.likelion.entity.User;
+import vn.edu.likelion.exception.ApiException;
+import vn.edu.likelion.exception.CustomHttpStatus;
+import vn.edu.likelion.exception.ResourceNotFoundException;
+import vn.edu.likelion.model.order.OrderRequest;
+import vn.edu.likelion.model.order.OrderResponse;
 import vn.edu.likelion.model.payment.PaymentDTO;
+import vn.edu.likelion.repository.CourseRepository;
+import vn.edu.likelion.repository.OrderRepository;
+import vn.edu.likelion.repository.UserRepository;
 import vn.edu.likelion.service.OrderInterface;
+import vn.edu.likelion.utility.AppConstant;
 import vn.edu.likelion.utility.VNPayUtility;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderInterface {
     private final VNPayConfig vnPayConfig;
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private CourseRepository courseRepository;
+    @Autowired private ModelMapper modelMapper;
 
     @Override
     public PaymentDTO createVnPayPayment(HttpServletRequest request) {
@@ -32,5 +53,45 @@ public class OrderServiceImpl implements OrderInterface {
         queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
         String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
         return new PaymentDTO("ok","success", paymentUrl);
+    }
+
+    @Override
+    public OrderResponse createOrder(OrderRequest orderRequest) {
+        String email = AppConstant.getEmailFromContextHolder();
+
+        User user = userRepository.findUserByEmail(email);
+        if(user == null) throw new ResourceNotFoundException("Customer", "email", email);
+
+        Course course = courseRepository.findById(orderRequest.getCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "id", orderRequest.getCourseId()));
+
+        if(orderRepository.existsOrderByUserAndCourse(user, course))
+            throw new ApiException(CustomHttpStatus.COURSE_PURCHASE);
+
+        Order order = new Order(course.getNewPrice(), LocalDateTime.now(),
+                user, course);
+
+        Order savedOrder = orderRepository.save(order);
+
+        return convertEntityToResponse(savedOrder);
+    }
+
+    @Override
+    public List<OrderResponse> getMyCourse() {
+        String email = AppConstant.getEmailFromContextHolder();
+        User user = userRepository.findUserByEmail(email);
+        if(user == null) throw new ResourceNotFoundException("Customer", "email", email);
+
+        List<Order> listOrders = orderRepository.findAllByUser(user);
+        if(listOrders.isEmpty()) throw new ApiException(CustomHttpStatus.LIST_COURSE_EMPTY);
+        return listOrders.stream().map(this::convertEntityToResponse).toList();
+    }
+
+    private OrderResponse convertEntityToResponse(Order order){
+        OrderResponse orderResponse = modelMapper.map(order, OrderResponse.class);
+        orderResponse.setCustomerName(order.getUser().getFullName());
+        orderResponse.setCourseTitle(order.getCourse().getTitle());
+        orderResponse.setCourseThumbnail(order.getCourse().getThumbnail());
+        return orderResponse;
     }
 }

@@ -1,5 +1,7 @@
 package vn.edu.likelion.utility;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 public class AppConstant {
     public final static String HOST = "https://onlinecourse.up.railway.app";
     public final static String SUBJECT_REGISTER = "Please verify your registration to continue";
@@ -15,4 +17,9 @@ public class AppConstant {
             "</span></div><div style=\"font-size: 16px; letter-spacing: normal;\"><br></div>" +
             "<div style=\"font-size: 16px; letter-spacing: normal;\">Thanks,</div>" +
             "<div style=\"font-size: 16px; letter-spacing: normal;\">The Tech Courses Team</div>";
+
+    public static String getEmailFromContextHolder(){
+        var context = SecurityContextHolder.getContext();
+        return context.getAuthentication().getName();
+    }
 }
