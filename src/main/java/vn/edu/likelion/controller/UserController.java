@@ -6,28 +6,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.likelion.model.user.UserRegisterRequest;
-import vn.edu.likelion.service.impl.UserServiceImpl;
+import vn.edu.likelion.service.UserInterface;
 
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin
 public class UserController {
 
-    @Autowired private UserServiceImpl userService;
+    @Autowired
+    private UserInterface userInterface;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid UserRegisterRequest userRegisterRequest){
-        return new ResponseEntity<>(userService.addUser(userRegisterRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(userInterface.addUser(userRegisterRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/verify")
     public ResponseEntity<?> verify(@RequestParam(value = "email") String email){
-        return ResponseEntity.ok(userService.verifyEmail(email));
+        return ResponseEntity.ok(userInterface.verifyEmail(email));
     }
 
     @GetMapping("/my-info")
     public ResponseEntity<?> myInfo(){
-        return ResponseEntity.ok(userService.getMyInfo());
+        return ResponseEntity.ok(userInterface.getMyInfo());
     }
 
     @DeleteMapping("/delete")

@@ -42,7 +42,8 @@ public class SecurityConfig {
         });
 
         httpSecurity.authorizeHttpRequests(request ->
-                        request.requestMatchers("/api/orders/**", "/api/users/my-info").authenticated()
+                        request.requestMatchers("/api/orders/**", "/api/users/my-info",
+                                        "/api/course/learning/**").authenticated()
                                 .requestMatchers("/api/users/delete").hasRole("ADMIN")
                                 .anyRequest().permitAll());
 

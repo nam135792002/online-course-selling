@@ -59,8 +59,8 @@ public class OrderServiceImpl implements OrderInterface {
     public OrderResponse createOrder(OrderRequest orderRequest) {
         String email = AppConstant.getEmailFromContextHolder();
 
-        User user = userRepository.findUserByEmail(email);
-        if(user == null) throw new ResourceNotFoundException("Customer", "email", email);
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "email", email));
 
         Course course = courseRepository.findById(orderRequest.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", orderRequest.getCourseId()));
@@ -89,8 +89,8 @@ public class OrderServiceImpl implements OrderInterface {
     @Override
     public List<OrderResponse> getMyCourse() {
         String email = AppConstant.getEmailFromContextHolder();
-        User user = userRepository.findUserByEmail(email);
-        if(user == null) throw new ResourceNotFoundException("Customer", "email", email);
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "email", email));
 
         List<Order> listOrders = orderRepository.findAllByUser(user);
         if(listOrders.isEmpty()) throw new ApiException(CustomHttpStatus.LIST_COURSE_EMPTY);

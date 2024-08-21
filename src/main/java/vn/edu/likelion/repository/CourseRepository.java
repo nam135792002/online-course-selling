@@ -4,7 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import vn.edu.likelion.entity.Course;
 
+import java.util.Optional;
+
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Integer> {
-    Course findCoursesBySlug(String slug);
+    Optional<Course> findCoursesBySlug(String slug);
 }

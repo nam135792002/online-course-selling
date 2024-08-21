@@ -12,4 +12,5 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     boolean existsOrderByUserAndCourse(User user, Course course);
     List<Order> findAllByUser(User user);
+
 }

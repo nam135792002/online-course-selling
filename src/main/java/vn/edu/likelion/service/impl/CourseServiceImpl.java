@@ -29,7 +29,9 @@ public class CourseServiceImpl implements CourseInterface {
 
     @Override
     public CourseReturnDetailResponse getCourseDetail(String slug) {
-        Course course = courseRepository.findCoursesBySlug(slug);
+        Course course = courseRepository.findCoursesBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "slug", slug));
+
         if (course == null){
             throw new ResourceNotFoundException("Course", "slug", slug);
         }

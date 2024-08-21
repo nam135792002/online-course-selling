@@ -13,6 +13,7 @@ import vn.edu.likelion.entity.InvalidatedToken;
 import vn.edu.likelion.entity.User;
 import vn.edu.likelion.exception.ApiException;
 import vn.edu.likelion.exception.CustomHttpStatus;
+import vn.edu.likelion.exception.ResourceNotFoundException;
 import vn.edu.likelion.model.user.AuthenticationRequest;
 import vn.edu.likelion.model.user.AuthenticationResponse;
 import vn.edu.likelion.model.user.LogoutRequest;
@@ -46,8 +47,8 @@ public class AuthenticationServiceImpl implements AuthenticationInterface {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        var user = userRepository.findUserByEmail(authenticationRequest.getEmail());
-        if(user == null) throw new ApiException(CustomHttpStatus.EMAIL_NOT_EXISTED);
+        User user = userRepository.findUserByEmail(authenticationRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Email", authenticationRequest.getEmail()));
         if(!user.isEnabled()) throw new ApiException(CustomHttpStatus.USER_NOT_ACTIVE);
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(),
                 user.getPassword());
@@ -89,8 +90,8 @@ public class AuthenticationServiceImpl implements AuthenticationInterface {
         invalidatedTokenRepository.save(invalidatedToken);
 
         var username = signJWT.getJWTClaimsSet().getSubject();
-        var user = userRepository.findUserByEmail(username);
-        if(user == null) throw new ApiException(CustomHttpStatus.UNAUTHENTICATED);
+        var user = userRepository.findUserByEmail(username)
+                .orElseThrow(() -> new ApiException(CustomHttpStatus.UNAUTHENTICATED));
         var token = generateToken(user);
         return new AuthenticationResponse(token);
     }

@@ -55,21 +55,19 @@ public class UserServiceImpl implements UserInterface {
 
     @Override
     public String verifyEmail(String email) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Email", email));
 
-        if(user == null) throw new ResourceNotFoundException("User", "Email", email);
-        else{
-            userRepository.enable(email);
-            return "Xác nhận email thành công.";
-        }
+        userRepository.enable(email);
+        return "Xác nhận email thành công.";
     }
 
     @Override
     public UserInfoResponse getMyInfo() {
         String email = AppConstant.getEmailFromContextHolder();
 
-        User user = userRepository.findUserByEmail(email);
-        if(user == null) throw new ApiException(CustomHttpStatus.EMAIL_NOT_EXISTED);
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Email", email));
 
         return modelMapper.map(user, UserInfoResponse.class);
     }

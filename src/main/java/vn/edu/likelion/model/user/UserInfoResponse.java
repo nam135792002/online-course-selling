@@ -20,5 +20,6 @@ public class UserInfoResponse {
 
     private String avatar;
 
+    @JsonProperty("date_participate")
     private LocalDate createdTime;
 }

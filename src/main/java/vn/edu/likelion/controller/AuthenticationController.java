@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.edu.likelion.model.user.AuthenticationRequest;
 import vn.edu.likelion.model.user.LogoutRequest;
 import vn.edu.likelion.model.user.RefreshRequest;
+import vn.edu.likelion.service.AuthenticationInterface;
 import vn.edu.likelion.service.impl.AuthenticationServiceImpl;
 
 import java.text.ParseException;
@@ -16,7 +17,9 @@ import java.text.ParseException;
 @RequestMapping("/api/auth")
 @CrossOrigin
 public class AuthenticationController {
-    @Autowired private AuthenticationServiceImpl authenticationService;
+
+    @Autowired
+    private AuthenticationInterface authenticationService;
 
     @PostMapping("/token")
     public ResponseEntity<?> login(@RequestBody @Valid AuthenticationRequest authenticationRequest){

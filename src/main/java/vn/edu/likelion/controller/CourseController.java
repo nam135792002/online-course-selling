@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.likelion.model.course.CourseReturnHomePageResponse;
+import vn.edu.likelion.service.CourseInterface;
 import vn.edu.likelion.service.impl.CourseServiceImpl;
 
 import java.util.List;
@@ -18,7 +19,9 @@ import java.util.List;
 )
 @CrossOrigin
 public class CourseController {
-    @Autowired private CourseServiceImpl courseService;
+
+    @Autowired
+    private CourseInterface courseService;
 
     @Operation(
             summary = "Get all course REST API in Home Page for all end-users",

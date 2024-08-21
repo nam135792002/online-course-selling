@@ -16,7 +16,8 @@ public enum CustomHttpStatus {
     USER_NOT_ACTIVE(1008, "Email chưa được xác thực", HttpStatus.UNAUTHORIZED),
     PASSWORD_INVALID(1009, "Sai mật khẩu",HttpStatus.UNAUTHORIZED),
     COURSE_PURCHASE(1010, "Bạn đã mua khóa học này trước đó",HttpStatus.CONFLICT),
-    LIST_COURSE_EMPTY(1011, "Danh sách khóa học của bạn đang rỗng",HttpStatus.NO_CONTENT);
+    LIST_COURSE_EMPTY(1011, "Danh sách khóa học của bạn đang rỗng",HttpStatus.NO_CONTENT),
+    NOT_PURCHASE(1012, "Bạn chưa mua khóa học này",HttpStatus.NO_CONTENT);
 
 
 
