@@ -8,6 +8,7 @@ import vn.edu.likelion.exception.ResourceNotFoundException;
 import vn.edu.likelion.model.chapter.ChapterDTO;
 import vn.edu.likelion.model.course.CourseReturnDetailResponse;
 import vn.edu.likelion.model.course.CourseReturnHomePageResponse;
+import vn.edu.likelion.model.course.CourseReturnResultSearch;
 import vn.edu.likelion.model.lesson.LessonDTO;
 import vn.edu.likelion.repository.CourseRepository;
 import vn.edu.likelion.service.CourseInterface;
@@ -45,5 +46,11 @@ public class CourseServiceImpl implements CourseInterface {
         }
 
         return courseReturnDetailResponse;
+    }
+
+    @Override
+    public List<CourseReturnResultSearch> listCourseByKeyword(String keyword) {
+        List<Course> listCourse = courseRepository.searchByKeyword(keyword);
+        return listCourse.stream().map(course -> modelMapper.map(course, CourseReturnResultSearch.class)).toList();
     }
 }

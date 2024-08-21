@@ -31,4 +31,10 @@ public class CourseReturnLearningResponse {
 
     @JsonProperty("average_lesson")
     int averageLesson;
+
+    @JsonProperty("lesson_current")
+    Integer lessonCurrent;
+
+    @JsonProperty("lesson_url")
+    String lessonUrl;
 }
