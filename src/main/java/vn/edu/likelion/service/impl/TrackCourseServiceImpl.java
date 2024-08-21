@@ -88,6 +88,7 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
                 lessonDTO.setDone(true);
                 totalLessonDone++;
             }
+            lessonDTO.setUnlock(trackCourse.isUnlock());
             durationInChapter = durationInChapter.plus(Duration.ofMinutes(lessonDTO.getDuration().getMinute())
                     .plusSeconds(lessonDTO.getDuration().getSecond()));
         }

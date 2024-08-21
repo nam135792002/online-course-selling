@@ -22,4 +22,7 @@ public class LessonDTO {
 
     @JsonProperty("is_done")
     private boolean isDone;
+
+    @JsonProperty("is_unlock")
+    private boolean isUnlock;
 }

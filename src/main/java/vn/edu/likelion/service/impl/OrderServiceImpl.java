@@ -81,6 +81,11 @@ public class OrderServiceImpl implements OrderInterface {
                 listTrackCourses.add(trackCourse);
             }
         }
+
+        if(!listTrackCourses.isEmpty()){
+            listTrackCourses.get(0).setUnlock(true);
+        }
+
         trackCourseRepository.saveAll(listTrackCourses);
 
         return convertEntityToResponse(savedOrder);
