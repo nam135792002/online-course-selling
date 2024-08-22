@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import vn.edu.likelion.model.chapter.ChapterDTO;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,4 +38,7 @@ public class CourseReturnLearningResponse {
 
     @JsonProperty("lesson_url")
     String lessonUrl;
+
+    @JsonProperty("current_time")
+    LocalTime currentTime;
 }

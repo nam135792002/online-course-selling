@@ -16,12 +16,13 @@ public enum CustomHttpStatus {
     USER_NOT_ACTIVE(1008, "Email chưa được xác thực", HttpStatus.UNAUTHORIZED),
     PASSWORD_INVALID(1009, "Sai mật khẩu",HttpStatus.UNAUTHORIZED),
     COURSE_PURCHASE(1010, "Bạn đã mua khóa học này trước đó",HttpStatus.CONFLICT),
-    LIST_COURSE_EMPTY(1011, "Danh sách khóa học của bạn đang rỗng",HttpStatus.NO_CONTENT),
+    LIST_COURSE_EMPTY(1011, "Danh sách khóa học của bạn đang rỗng",HttpStatus.NOT_FOUND),
     NOT_PURCHASE(1012, "Bạn chưa mua khóa học này",HttpStatus.BAD_REQUEST),
     NOT_LESSON(1014, "Bạn không được học bài giảng này",HttpStatus.BAD_REQUEST),
     NOT_ACCESS_LESSON(1015, "Bài học này chưa được mở khóa",HttpStatus.BAD_REQUEST),
     NOT_EXISTED_LESSON(1016, "Không tồn tại bài học trong khóa học này",HttpStatus.BAD_REQUEST),
-    LOAD_IMAGE_FAILED(1017, "Upload ảnh thất bại",HttpStatus.BAD_REQUEST);
+    LOAD_IMAGE_FAILED(1017, "Upload ảnh thất bại",HttpStatus.BAD_REQUEST),
+    USER_COMMENTED(1018, "Bạn đã đánh giá khóa học này",HttpStatus.CONFLICT);
 
 
     private int code;

@@ -29,6 +29,9 @@ public class CourseReturnDetailResponse {
     @JsonProperty("is_purchase")
     private boolean isPurchase;
 
+    @JsonProperty("is_review")
+    private boolean isReview;
+
     @JsonProperty("new_price")
     private long newPrice;
 

@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import vn.edu.likelion.model.ApiResponse;
 import vn.edu.likelion.service.impl.TrackCourseServiceImpl;
 
+import java.time.LocalTime;
+
 @RestController
 @RequestMapping("/api/course/learning")
 @CrossOrigin
@@ -21,7 +23,8 @@ public class TrackCourseController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> confirmLessonIsDone(@PathVariable(value = "id") Integer lessonId){
-        return ResponseEntity.ok(new ApiResponse(trackCourseInterface.confirmLesson(lessonId)));
+    public ResponseEntity<?> confirmLessonIsDone(@PathVariable(value = "id") Integer lessonId,
+                                                 @RequestParam(value = "current_time", required = false) LocalTime duration){
+        return ResponseEntity.ok(new ApiResponse(trackCourseInterface.confirmLesson(lessonId, duration)));
     }
 }

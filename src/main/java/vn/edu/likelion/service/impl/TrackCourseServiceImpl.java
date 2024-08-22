@@ -59,7 +59,7 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
     }
 
     @Override
-    public String confirmLesson(Integer lessonId) {
+    public String confirmLesson(Integer lessonId, LocalTime duration) {
         String email = AppConstant.getEmailFromContextHolder();
 
         User user = userRepository.findUserByEmail(email)
@@ -72,33 +72,38 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
 
         if(trackCourse == null) throw new ApiException(CustomHttpStatus.NOT_LESSON);
         if(!trackCourse.isUnlock()) throw new ApiException(CustomHttpStatus.NOT_ACCESS_LESSON);
-
-        trackCourseRepository.updateDone(trackCourse.getLesson().getId(), trackCourse.getUser().getId());
-
-        List<TrackCourse> listTrackCourses = trackCourseRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
-
-        Optional<Integer> lessonIdNext = listTrackCourses.stream()
-                .filter(track -> track.getLesson().getId().equals(lessonId))
-                .map(track -> {
-                    int index = listTrackCourses.indexOf(track);
-                    if(index != -1 && index < listTrackCourses.size() - 1){
-                        return listTrackCourses.get(index + 1).getLesson().getId();
-                    }else{
-                        return -1;
-                    }
-                }).findFirst();
-
-        if(lessonIdNext.get() != -1 ){
-            Lesson lessonNext = lessonRepository.findById(lessonIdNext.get())
-                    .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", lessonIdNext.get()));
-
-            TrackCourse trackCourseNext = trackCourseRepository.findTrackCourseByLessonIdAndUserId(lessonNext.getId(), user.getId());
-            if(!trackCourseNext.isUnlock()){
-                trackCourseRepository.updateUnlock(lessonNext.getId(), user.getId());
-            }
+        if(duration != null){
+            trackCourse.setTrackLesson(duration);
+            trackCourseRepository.save(trackCourse);
             return "SUCCESS";
         }else{
-            return "Bạn đã hoàn thành khóa học này";
+            trackCourseRepository.updateDone(trackCourse.getLesson().getId(), trackCourse.getUser().getId());
+
+            List<TrackCourse> listTrackCourses = trackCourseRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+
+            Optional<Integer> lessonIdNext = listTrackCourses.stream()
+                    .filter(track -> track.getLesson().getId().equals(lessonId))
+                    .map(track -> {
+                        int index = listTrackCourses.indexOf(track);
+                        if(index != -1 && index < listTrackCourses.size() - 1){
+                            return listTrackCourses.get(index + 1).getLesson().getId();
+                        }else{
+                            return -1;
+                        }
+                    }).findFirst();
+
+            if(lessonIdNext.get() != -1 ){
+                Lesson lessonNext = lessonRepository.findById(lessonIdNext.get())
+                        .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", lessonIdNext.get()));
+
+                TrackCourse trackCourseNext = trackCourseRepository.findTrackCourseByLessonIdAndUserId(lessonNext.getId(), user.getId());
+                if(!trackCourseNext.isUnlock()){
+                    trackCourseRepository.updateUnlock(lessonNext.getId(), user.getId());
+                }
+                return "SUCCESS";
+            }else{
+                return "Bạn đã hoàn thành khóa học này";
+            }
         }
     }
 
@@ -120,17 +125,19 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
             if(!trackCourse.isUnlock()) throw new ApiException(CustomHttpStatus.NOT_ACCESS_LESSON);
             courseLearning.setLessonCurrent(lessonId);
             courseLearning.setLessonUrl(trackCourse.getLesson().getUrl());
+            courseLearning.setCurrentTime(trackCourse.getTrackLesson());
         }else{
             List<TrackCourse> listTrack = trackCourseRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
             if(!listTrack.get(0).isDone()){
-                System.out.println(listTrack.get(0).getId());
                 courseLearning.setLessonCurrent(listTrack.get(0).getLesson().getId());
                 courseLearning.setLessonUrl(listTrack.get(0).getLesson().getUrl());
+                courseLearning.setCurrentTime(listTrack.get(0).getTrackLesson());
             }else{
                 Optional<TrackCourse> firstNotDone = listTrack.stream().filter(trackCourse -> !trackCourse.isDone()).findFirst();
                 if(firstNotDone.isPresent()){
                     courseLearning.setLessonCurrent(firstNotDone.get().getLesson().getId());
                     courseLearning.setLessonUrl(firstNotDone.get().getLesson().getUrl());
+                    courseLearning.setCurrentTime(firstNotDone.get().getTrackLesson());
                 }else{
                     courseLearning.setLessonCurrent(listTrack.get(listTrack.size()-1).getLesson().getId());
                     courseLearning.setLessonUrl(listTrack.get(listTrack.size()-1).getLesson().getUrl());
