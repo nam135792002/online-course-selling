@@ -7,6 +7,7 @@ import vn.edu.likelion.model.ApiResponse;
 import vn.edu.likelion.model.course.CourseReturnHomePageResponse;
 import vn.edu.likelion.model.course.CourseReturnResultSearch;
 import vn.edu.likelion.service.CourseInterface;
+import vn.edu.likelion.service.impl.CourseServiceImpl;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public class CourseController {
 
     @Autowired
-    private CourseInterface courseService;
+    private CourseServiceImpl courseService;
 
     @GetMapping("/home-page")
     public ResponseEntity<?> getAllReturnHomePage(){

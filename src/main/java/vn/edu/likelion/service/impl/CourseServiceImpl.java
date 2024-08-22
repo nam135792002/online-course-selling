@@ -11,13 +11,18 @@ import vn.edu.likelion.model.course.CourseReturnHomePageResponse;
 import vn.edu.likelion.model.course.CourseReturnResultSearch;
 import vn.edu.likelion.model.lesson.LessonDTO;
 import vn.edu.likelion.repository.CourseRepository;
+import vn.edu.likelion.repository.OrderRepository;
+import vn.edu.likelion.repository.UserRepository;
 import vn.edu.likelion.service.CourseInterface;
+import vn.edu.likelion.utility.AppConstant;
 
 import java.util.List;
 
 @Service
 public class CourseServiceImpl implements CourseInterface {
     @Autowired private CourseRepository courseRepository;
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private UserRepository userRepository;
     @Autowired private ModelMapper modelMapper;
 
     @Override
@@ -33,11 +38,15 @@ public class CourseServiceImpl implements CourseInterface {
         Course course = courseRepository.findCoursesBySlug(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "slug", slug));
 
-        if (course == null){
-            throw new ResourceNotFoundException("Course", "slug", slug);
+        CourseReturnDetailResponse courseReturnDetailResponse = modelMapper.map(course, CourseReturnDetailResponse.class);
+
+        String email = AppConstant.getEmailFromContextHolder();
+        if(!email.equals("anonymousUser")){
+            User user = userRepository.findUserByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer", "email", email));
+            if (orderRepository.existsOrderByUserAndCourse(user, course)) courseReturnDetailResponse.setPurchase(true);
         }
 
-        CourseReturnDetailResponse courseReturnDetailResponse = modelMapper.map(course, CourseReturnDetailResponse.class);
         courseReturnDetailResponse.setDecs(course.getDescription());
         for (CourseDetail courseDetail : course.getListCourseDetails()){
             if(courseDetail.getType().equals(InformationType.TARGET)){

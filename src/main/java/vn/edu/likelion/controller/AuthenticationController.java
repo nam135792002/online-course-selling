@@ -19,7 +19,7 @@ import java.text.ParseException;
 public class AuthenticationController {
 
     @Autowired
-    private AuthenticationInterface authenticationService;
+    private AuthenticationServiceImpl authenticationService;
 
     @PostMapping("/token")
     public ResponseEntity<?> login(@RequestBody @Valid AuthenticationRequest authenticationRequest){

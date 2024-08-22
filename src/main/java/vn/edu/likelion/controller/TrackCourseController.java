@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.likelion.model.ApiResponse;
-import vn.edu.likelion.service.TrackCourseInterface;
+import vn.edu.likelion.service.impl.TrackCourseServiceImpl;
 
 @RestController
 @RequestMapping("/api/course/learning")
 @CrossOrigin
 public class TrackCourseController {
     @Autowired
-    private TrackCourseInterface trackCourseInterface;
+    private TrackCourseServiceImpl trackCourseInterface;
 
     @GetMapping("/{slug}")
     public ResponseEntity<?> getAllLesson(@RequestParam(value = "id", required = false) Integer lessonId,
