@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.edu.likelion.model.user.UserRegisterRequest;
+import vn.edu.likelion.model.user.UserUpdateRequest;
 import vn.edu.likelion.service.UserInterface;
 
 @RestController
@@ -34,5 +36,11 @@ public class UserController {
     @DeleteMapping("/delete")
     public ResponseEntity<?> delete(){
         return ResponseEntity.ok("Success");
+    }
+
+    @PutMapping("/update-profile")
+    public ResponseEntity<?> updateProfile(@RequestParam(value = "full_name", required = false) String fullName,
+                                           @RequestParam(value = "image", required = false) MultipartFile multipartFile){
+        return ResponseEntity.ok(userInterface.updateUser(fullName, multipartFile));
     }
 }

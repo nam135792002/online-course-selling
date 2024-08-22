@@ -1,5 +1,7 @@
 package vn.edu.likelion.service.impl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.modelmapper.ModelMapper;
@@ -11,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import vn.edu.likelion.entity.Role;
 import vn.edu.likelion.entity.User;
 import vn.edu.likelion.exception.ApiException;
@@ -23,16 +26,23 @@ import vn.edu.likelion.repository.UserRepository;
 import vn.edu.likelion.service.UserInterface;
 import vn.edu.likelion.utility.AppConstant;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Properties;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserInterface {
-    @Autowired private UserRepository userRepository;
-    @Autowired private ModelMapper modelMapper;
-    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Override
     public UserRegisterResponse addUser(UserRegisterRequest userRegisterRequest) {
@@ -70,6 +80,45 @@ public class UserServiceImpl implements UserInterface {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "Email", email));
 
         return modelMapper.map(user, UserInfoResponse.class);
+    }
+
+    @Override
+    public UserInfoResponse updateUser(String fullName, MultipartFile thumbnail) {
+        String email = AppConstant.getEmailFromContextHolder();
+
+        User userInDB = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Email", email));
+        if(fullName != null){
+            userInDB.setFullName(fullName);
+        }
+
+        if(thumbnail != null){
+            deleteImageInCloudinary(userInDB.getAvatar());
+            Map r = null;
+            try {
+                r = cloudinary.uploader().upload(thumbnail.getBytes(),
+                        ObjectUtils.asMap("resource_type","auto"));
+            } catch (IOException e) {
+                throw new ApiException(CustomHttpStatus.LOAD_IMAGE_FAILED);
+            }
+            String img = (String) r.get("secure_url");
+            userInDB.setAvatar(img);
+        }
+        User savedUser = userRepository.save(userInDB);
+        return modelMapper.map(savedUser, UserInfoResponse.class);
+    }
+
+    public void deleteImageInCloudinary(String url){
+        try {
+            int lastSlashIndex = url.lastIndexOf('/');
+            int lastDotIndex = url.lastIndexOf('.');
+            String fileName = url.substring(lastSlashIndex + 1, lastDotIndex);
+            if(!fileName.equals("lsorq9sodc5qiey5nuhx")){
+                cloudinary.uploader().destroy(fileName, ObjectUtils.asMap("resource_type","image"));
+            }
+        } catch (IOException e) {
+            throw new ApiException(CustomHttpStatus.LOAD_IMAGE_FAILED);
+        }
     }
 
     private void sendEmail(User user){

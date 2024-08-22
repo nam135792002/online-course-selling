@@ -43,7 +43,7 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests(request ->
                         request.requestMatchers("/api/orders/**", "/api/users/my-info",
-                                        "/api/course/learning/**").authenticated()
+                                        "/api/course/learning/**", "/api/users/update-profile").authenticated()
                                 .requestMatchers("/api/users/delete").hasRole("ADMIN")
                                 .anyRequest().permitAll());
 
