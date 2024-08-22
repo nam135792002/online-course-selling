@@ -17,6 +17,7 @@ public class ReviewResponse {
 
     private int rating;
 
+    @JsonProperty("time_ago")
     private String timeAgo;
 
     private String thumbnail;

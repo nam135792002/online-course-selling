@@ -20,6 +20,7 @@ import vn.edu.likelion.utility.AppConstant;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ReviewServiceImpl implements ReviewInterface {
@@ -37,9 +38,11 @@ public class ReviewServiceImpl implements ReviewInterface {
     @Override
     public ReviewResponse createReview(ReviewRequest reviewRequest) {
         Review review = modelMapper.map(reviewRequest, Review.class);
+
         String email = AppConstant.getEmailFromContextHolder();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer", "email", email));
+
         Course course = courseRepository.findById(reviewRequest.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course", "id", reviewRequest.getCourseId()));
 
@@ -54,6 +57,33 @@ public class ReviewServiceImpl implements ReviewInterface {
         review.setUser(user);
         review.setCourse(course);
         Review savedReview = reviewRepository.save(review);
+
+        return convertToResponse(savedReview);
+    }
+
+    @Override
+    public List<ReviewResponse> listAll() {
+        List<Review> listReviews = reviewRepository.findAll();
+        return listReviews.stream().map(this::convertToResponse).toList();
+    }
+
+    @Override
+    public ReviewResponse updateReview(ReviewRequest reviewRequest) {
+        Review review = reviewRepository.findById(reviewRequest.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Review", "id", reviewRequest.getId()));
+
+        String email = AppConstant.getEmailFromContextHolder();
+
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "email", email));
+
+        if(review.getUser().getId() != user.getId())
+            throw new ApiException(CustomHttpStatus.USER_NOT_COMMENT);
+
+        return null;
+    }
+
+    private ReviewResponse convertToResponse(Review savedReview){
         ReviewResponse reviewResponse = modelMapper.map(savedReview, ReviewResponse.class);
         reviewResponse.setFullName(savedReview.getUser().getFullName());
         reviewResponse.setThumbnail(savedReview.getUser().getAvatar());

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import vn.edu.likelion.model.user.AuthenticationRequest;
 import vn.edu.likelion.model.user.LogoutRequest;
 import vn.edu.likelion.model.user.RefreshRequest;
-import vn.edu.likelion.service.AuthenticationInterface;
 import vn.edu.likelion.service.impl.AuthenticationServiceImpl;
 
 import java.text.ParseException;
