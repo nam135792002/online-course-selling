@@ -21,6 +21,7 @@ import vn.edu.likelion.utility.AppConstant;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReviewServiceImpl implements ReviewInterface {
@@ -77,10 +78,29 @@ public class ReviewServiceImpl implements ReviewInterface {
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer", "email", email));
 
-        if(review.getUser().getId() != user.getId())
+        if(!Objects.equals(review.getUser().getId(), user.getId()))
             throw new ApiException(CustomHttpStatus.USER_NOT_COMMENT);
 
-        return null;
+        review.setComment(reviewRequest.getComment());
+        Review savedReview = reviewRepository.save(review);
+        return convertToResponse(savedReview);
+    }
+
+    @Override
+    public String deleteReview(Integer reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Review", "id", reviewId));
+
+        String email = AppConstant.getEmailFromContextHolder();
+
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "email", email));
+
+        if(!Objects.equals(review.getUser().getId(), user.getId()))
+            throw new ApiException(CustomHttpStatus.USER_NOT_COMMENT);
+
+        reviewRepository.delete(review);
+        return "SUCCESS";
     }
 
     private ReviewResponse convertToResponse(Review savedReview){

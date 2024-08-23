@@ -9,4 +9,5 @@ public interface ReviewInterface {
     ReviewResponse createReview(ReviewRequest reviewRequest);
     List<ReviewResponse> listAll();
     ReviewResponse updateReview(ReviewRequest reviewRequest);
+    String deleteReview(Integer reviewId);
 }

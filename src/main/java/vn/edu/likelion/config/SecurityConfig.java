@@ -44,7 +44,8 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(request ->
                         request.requestMatchers("/api/orders/**", "/api/users/my-info",
                                         "/api/course/learning/**", "/api/users/update-profile",
-                                        "/api/reviews/save").authenticated()
+                                        "/api/reviews/save", "/api/reviews/update",
+                                        "/api/reviews/delete/**").authenticated()
                                 .requestMatchers("/api/users/delete").hasRole("ADMIN")
                                 .anyRequest().permitAll());
 
