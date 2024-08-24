@@ -131,8 +131,8 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
 
             if(trackCourse == null) throw new ApiException(CustomHttpStatus.NOT_LESSON);
             if(!trackCourse.isUnlock()) throw new ApiException(CustomHttpStatus.NOT_ACCESS_LESSON);
-            trackCourseRepository.updateCurrentLesson(trackCourse.getId());
             trackCourseRepository.updatePreLesson(trackCoursePre.getId());
+            trackCourseRepository.updateCurrentLesson(trackCourse.getId());
             return null;
         }else{
             Optional<TrackCourse> trackCourseCurrent = listTrack.stream().filter(TrackCourse::isCurrent).findFirst();
