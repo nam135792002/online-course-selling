@@ -13,4 +13,5 @@ import lombok.experimental.FieldDefaults;
 public class CourseReturnResultSearch {
     String title;
     String thumbnail;
+    String slug;
 }
