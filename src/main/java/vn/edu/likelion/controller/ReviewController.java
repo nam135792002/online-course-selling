@@ -20,8 +20,8 @@ public class ReviewController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<?> getAll(){
-        return ResponseEntity.ok(reviewService.listAll());
+    public ResponseEntity<?> getAll(@RequestParam(value = "slug") String slug){
+        return ResponseEntity.ok(reviewService.listAll(slug));
     }
 
     @PutMapping("/update")

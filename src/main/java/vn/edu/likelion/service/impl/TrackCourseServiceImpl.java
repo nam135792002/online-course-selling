@@ -123,25 +123,20 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
 
             if(trackCourse == null) throw new ApiException(CustomHttpStatus.NOT_LESSON);
             if(!trackCourse.isUnlock()) throw new ApiException(CustomHttpStatus.NOT_ACCESS_LESSON);
-            courseLearning.setLessonCurrent(lessonId);
-            courseLearning.setLessonUrl(trackCourse.getLesson().getUrl());
-            courseLearning.setCurrentTime(trackCourse.getTrackLesson());
+            trackCourseRepository.updateCurrentLesson(trackCourse.getId());
+//            courseLearning.setLessonCurrent(lessonId);
+//            courseLearning.setLessonUrl(trackCourse.getLesson().getUrl());
+//            courseLearning.setCurrentTime(trackCourse.getTrackLesson());
         }else{
             List<TrackCourse> listTrack = trackCourseRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
-            if(!listTrack.get(0).isDone()){
-                courseLearning.setLessonCurrent(listTrack.get(0).getLesson().getId());
-                courseLearning.setLessonUrl(listTrack.get(0).getLesson().getUrl());
-                courseLearning.setCurrentTime(listTrack.get(0).getTrackLesson());
+            Optional<TrackCourse> firstNotDone = listTrack.stream().filter(TrackCourse::isCurrent).findFirst();
+            if(firstNotDone.isPresent()){
+                courseLearning.setLessonCurrent(firstNotDone.get().getLesson().getId());
+                courseLearning.setLessonUrl(firstNotDone.get().getLesson().getUrl());
+                courseLearning.setCurrentTime(firstNotDone.get().getTrackLesson());
             }else{
-                Optional<TrackCourse> firstNotDone = listTrack.stream().filter(trackCourse -> !trackCourse.isDone()).findFirst();
-                if(firstNotDone.isPresent()){
-                    courseLearning.setLessonCurrent(firstNotDone.get().getLesson().getId());
-                    courseLearning.setLessonUrl(firstNotDone.get().getLesson().getUrl());
-                    courseLearning.setCurrentTime(firstNotDone.get().getTrackLesson());
-                }else{
-                    courseLearning.setLessonCurrent(listTrack.get(listTrack.size()-1).getLesson().getId());
-                    courseLearning.setLessonUrl(listTrack.get(listTrack.size()-1).getLesson().getUrl());
-                }
+                courseLearning.setLessonCurrent(listTrack.get(listTrack.size()-1).getLesson().getId());
+                courseLearning.setLessonUrl(listTrack.get(listTrack.size()-1).getLesson().getUrl());
             }
         }
 

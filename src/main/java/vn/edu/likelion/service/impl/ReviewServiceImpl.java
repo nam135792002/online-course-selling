@@ -63,8 +63,11 @@ public class ReviewServiceImpl implements ReviewInterface {
     }
 
     @Override
-    public List<ReviewResponse> listAll() {
-        List<Review> listReviews = reviewRepository.findAll();
+    public List<ReviewResponse> listAll(String slug) {
+        Course course = courseRepository.findCoursesBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", "slug", slug));
+        List<Review> listReviews = reviewRepository.findReviewByCourse(course);
+        if(listReviews.isEmpty()) throw new ApiException(CustomHttpStatus.REVIEW_IS_EMPTY);
         return listReviews.stream().map(this::convertToResponse).toList();
     }
 

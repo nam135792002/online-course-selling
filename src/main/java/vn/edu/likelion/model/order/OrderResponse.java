@@ -23,6 +23,8 @@ public class OrderResponse {
     @JsonProperty("course_thumbnail")
     String courseThumbnail;
 
+    String slug;
+
     @JsonProperty("date_purchase")
     LocalDateTime createdPurchase;
 }

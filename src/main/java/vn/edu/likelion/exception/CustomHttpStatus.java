@@ -23,7 +23,8 @@ public enum CustomHttpStatus {
     NOT_EXISTED_LESSON(1016, "Không tồn tại bài học trong khóa học này",HttpStatus.BAD_REQUEST),
     LOAD_IMAGE_FAILED(1017, "Upload ảnh thất bại",HttpStatus.BAD_REQUEST),
     USER_COMMENTED(1018, "Bạn đã đánh giá khóa học này",HttpStatus.CONFLICT),
-    USER_NOT_COMMENT(1018, "Bạn không có quyền thay đổi review",HttpStatus.FORBIDDEN);
+    USER_NOT_COMMENT(1019, "Bạn không có quyền thay đổi review",HttpStatus.FORBIDDEN),
+    REVIEW_IS_EMPTY(1020, "Chưa có review nào dành cho khóa học này",HttpStatus.NOT_FOUND);
 
 
     private int code;

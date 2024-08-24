@@ -30,6 +30,9 @@ public class TrackCourse {
     @JoinColumn(name = "is_unlock")
     private boolean isUnlock;
 
+    @Column(name = "is_current")
+    private boolean isCurrent = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

@@ -37,6 +37,9 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrackCourse> listTrackCourses = new ArrayList<>();
 
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> listComments = new ArrayList<>();
+
     public Lesson(String name, String url, Chapter chapter) {
         this.name = name;
         this.url = url;

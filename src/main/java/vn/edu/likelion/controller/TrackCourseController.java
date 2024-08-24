@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.likelion.model.ApiResponse;
+import vn.edu.likelion.model.trackcourse.TrackCourseRequest;
 import vn.edu.likelion.service.impl.TrackCourseServiceImpl;
 
 import java.time.LocalTime;
@@ -24,7 +25,7 @@ public class TrackCourseController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> confirmLessonIsDone(@PathVariable(value = "id") Integer lessonId,
-                                                 @RequestParam(value = "current_time", required = false) LocalTime duration){
-        return ResponseEntity.ok(new ApiResponse(trackCourseInterface.confirmLesson(lessonId, duration)));
+                                                 @RequestBody(required = false) TrackCourseRequest request){
+        return ResponseEntity.ok(new ApiResponse(trackCourseInterface.confirmLesson(lessonId, request.getCurrentTime())));
     }
 }

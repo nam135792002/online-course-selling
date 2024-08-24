@@ -84,6 +84,7 @@ public class OrderServiceImpl implements OrderInterface {
 
         if(!listTrackCourses.isEmpty()){
             listTrackCourses.get(0).setUnlock(true);
+            listTrackCourses.get(0).setCurrent(true);
         }
 
         trackCourseRepository.saveAll(listTrackCourses);
@@ -107,6 +108,7 @@ public class OrderServiceImpl implements OrderInterface {
         orderResponse.setCustomerName(order.getUser().getFullName());
         orderResponse.setCourseTitle(order.getCourse().getTitle());
         orderResponse.setCourseThumbnail(order.getCourse().getThumbnail());
+        orderResponse.setSlug(order.getCourse().getSlug());
         return orderResponse;
     }
 }

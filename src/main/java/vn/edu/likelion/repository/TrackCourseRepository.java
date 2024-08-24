@@ -12,10 +12,14 @@ public interface TrackCourseRepository extends JpaRepository<TrackCourse, Intege
     TrackCourse findTrackCourseByLessonIdAndUserId(Integer lessonId, Integer userId);
 
     @Modifying
-    @Query("update TrackCourse t set t.isDone = true, t.trackLesson = null where t.lesson.id = ?1 and t.user.id = ?2")
+    @Query("update TrackCourse t set t.isDone = true, t.trackLesson = null, t.isCurrent = false where t.lesson.id = ?1 and t.user.id = ?2")
     void updateDone(Integer lessonPreId, Integer userId);
 
     @Modifying
-    @Query("update TrackCourse t set t.isUnlock = true where t.lesson.id = ?1 and t.user.id = ?2")
+    @Query("update TrackCourse t set t.isUnlock = true, t.isCurrent = true where t.lesson.id = ?1 and t.user.id = ?2")
     void updateUnlock(Integer lessonNextId, Integer userId);
+
+    @Modifying
+    @Query("update TrackCourse t set t.isCurrent = true where t.id = ?1")
+    void updateCurrentLesson(Integer trackCourseId);
 }

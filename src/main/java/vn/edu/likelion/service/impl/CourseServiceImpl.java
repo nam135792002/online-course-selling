@@ -55,7 +55,7 @@ public class CourseServiceImpl implements CourseInterface {
                     .orElseThrow(() -> new ResourceNotFoundException("Customer", "email", email));
             if (orderRepository.existsOrderByUserAndCourse(user, course)) {
                 courseReturnDetailResponse.setPurchase(true);
-                if (!reviewRepository.existsReviewByUserAndCourse(user, course)) {
+                if (reviewRepository.existsReviewByUserAndCourse(user, course)) {
                     courseReturnDetailResponse.setReview(true);
                 }
             }
