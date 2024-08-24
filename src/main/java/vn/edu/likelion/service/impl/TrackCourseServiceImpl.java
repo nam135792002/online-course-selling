@@ -71,15 +71,16 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
         TrackCourse trackCourse = trackCourseRepository.findTrackCourseByLessonIdAndUserId(lesson.getId(), user.getId());
 
         if(trackCourse == null) throw new ApiException(CustomHttpStatus.NOT_LESSON);
-        if(!trackCourse.isUnlock()) throw new ApiException(CustomHttpStatus.NOT_ACCESS_LESSON);
+        if(!trackCourse.isUnlock() || trackCourse.isDone()) throw new ApiException(CustomHttpStatus.NOT_ACCESS_LESSON);
         if(duration != null){
             trackCourse.setTrackLesson(duration);
             trackCourseRepository.save(trackCourse);
             return "SUCCESS";
         }else{
-            trackCourseRepository.updateDone(trackCourse.getLesson().getId(), trackCourse.getUser().getId());
 
-            List<TrackCourse> listTrackCourses = trackCourseRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+            List<TrackCourse> listTrackCourses = trackCourseRepository
+                    .findAllByCourseAndUser(lesson.getChapter().getCourse().getId(), user.getId(),
+                    Sort.by(Sort.Direction.ASC, "id"));
 
             Optional<Integer> lessonIdNext = listTrackCourses.stream()
                     .filter(track -> track.getLesson().getId().equals(lessonId))
@@ -93,6 +94,7 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
                     }).findFirst();
 
             if(lessonIdNext.get() != -1 ){
+                trackCourseRepository.updateDone(trackCourse.getLesson().getId(), trackCourse.getUser().getId());
                 Lesson lessonNext = lessonRepository.findById(lessonIdNext.get())
                         .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", lessonIdNext.get()));
 
@@ -102,17 +104,22 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
                 }
                 return "SUCCESS";
             }else{
+                trackCourseRepository.updateLessonLastDone(trackCourse.getLesson().getId(), trackCourse.getUser().getId());
                 return "Bạn đã hoàn thành khóa học này";
             }
         }
     }
 
-
-
     private CourseReturnLearningResponse buildCourseLearningResponse(Course course, User user, Integer lessonId) {
         CourseReturnLearningResponse courseLearning = modelMapper.map(course, CourseReturnLearningResponse.class);
 
+        List<TrackCourse> listTrack = trackCourseRepository.findAllByCourseAndUser(courseLearning.getId(), user.getId(),
+                Sort.by(Sort.Direction.ASC, "id"));
+
+        Optional<TrackCourse> firstIsCurrent = listTrack.stream().filter(TrackCourse::isCurrent).findFirst();
         if(lessonId != 0){
+            Integer lessonIsCurrent = firstIsCurrent.get().getLesson().getId();
+
             Lesson lesson = lessonRepository.findById(lessonId)
                     .orElseThrow(() -> new ResourceNotFoundException("Lesson", "id", lessonId));
 
@@ -120,22 +127,31 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
                 throw new ApiException(CustomHttpStatus.NOT_EXISTED_LESSON);
 
             TrackCourse trackCourse = trackCourseRepository.findTrackCourseByLessonIdAndUserId(lesson.getId(), user.getId());
+            TrackCourse trackCoursePre = trackCourseRepository.findTrackCourseByLessonIdAndUserId(lessonIsCurrent, user.getId());
 
             if(trackCourse == null) throw new ApiException(CustomHttpStatus.NOT_LESSON);
             if(!trackCourse.isUnlock()) throw new ApiException(CustomHttpStatus.NOT_ACCESS_LESSON);
             trackCourseRepository.updateCurrentLesson(trackCourse.getId());
-//            courseLearning.setLessonCurrent(lessonId);
-//            courseLearning.setLessonUrl(trackCourse.getLesson().getUrl());
-//            courseLearning.setCurrentTime(trackCourse.getTrackLesson());
+            trackCourseRepository.updatePreLesson(trackCoursePre.getId());
+            return null;
         }else{
-            List<TrackCourse> listTrack = trackCourseRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
-            Optional<TrackCourse> firstNotDone = listTrack.stream().filter(TrackCourse::isCurrent).findFirst();
-            if(firstNotDone.isPresent()){
-                courseLearning.setLessonCurrent(firstNotDone.get().getLesson().getId());
-                courseLearning.setLessonUrl(firstNotDone.get().getLesson().getUrl());
-                courseLearning.setCurrentTime(firstNotDone.get().getTrackLesson());
+            Optional<TrackCourse> trackCourseCurrent = listTrack.stream().filter(TrackCourse::isCurrent).findFirst();
+
+            if(trackCourseCurrent.isPresent()){
+                courseLearning.setLessonCurrent(trackCourseCurrent.get().getLesson().getId());
+                courseLearning.setLessonUrl(trackCourseCurrent.get().getLesson().getUrl());
+                courseLearning.setCurrentTime(trackCourseCurrent.get().getTrackLesson());
+
+                int currentIndex = listTrack.indexOf(trackCourseCurrent.get());
+                TrackCourse trackCoursePre = (currentIndex > 0) ? listTrack.get(currentIndex - 1) : null;
+                TrackCourse trackCourseNext = (currentIndex < listTrack.size() - 1) ? listTrack.get(currentIndex + 1) : null;
+                courseLearning.setLessonPre(trackCoursePre != null ? trackCoursePre.getLesson().getId() : null);
+                courseLearning.setLessonNext(trackCourseNext != null ? trackCourseNext.getLesson().getId() : null);
+
             }else{
                 courseLearning.setLessonCurrent(listTrack.get(listTrack.size()-1).getLesson().getId());
+                courseLearning.setLessonPre(listTrack.get(listTrack.size()-2).getLesson().getId());
+                courseLearning.setLessonNext(null);
                 courseLearning.setLessonUrl(listTrack.get(listTrack.size()-1).getLesson().getUrl());
             }
         }

@@ -36,6 +36,12 @@ public class CourseReturnLearningResponse {
     @JsonProperty("lesson_current")
     Integer lessonCurrent;
 
+    @JsonProperty("lesson_pre")
+    Integer lessonPre;
+
+    @JsonProperty("lesson_next")
+    Integer lessonNext;
+
     @JsonProperty("lesson_url")
     String lessonUrl;
 

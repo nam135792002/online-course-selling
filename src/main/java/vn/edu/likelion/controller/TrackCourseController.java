@@ -26,6 +26,8 @@ public class TrackCourseController {
     @PutMapping("/update/{id}")
     public ResponseEntity<?> confirmLessonIsDone(@PathVariable(value = "id") Integer lessonId,
                                                  @RequestBody(required = false) TrackCourseRequest request){
-        return ResponseEntity.ok(new ApiResponse(trackCourseInterface.confirmLesson(lessonId, request.getCurrentTime())));
+        LocalTime duration = null;
+        if (request != null && request.getCurrentTime() != null) duration = request.getCurrentTime();
+        return ResponseEntity.ok(new ApiResponse(trackCourseInterface.confirmLesson(lessonId, duration)));
     }
 }
