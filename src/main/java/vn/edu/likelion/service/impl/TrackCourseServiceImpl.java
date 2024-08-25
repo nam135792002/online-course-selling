@@ -160,7 +160,7 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
         int totalLessonDone = 0;
 
         for (ChapterDTO chapterDTO : courseLearning.getListChapters()) {
-            int[] lessonsCount = calculateChapterDetails(chapterDTO, user);
+            int[] lessonsCount = calculateChapterDetails(chapterDTO, listTrack);
             chapterDTO.setTotalLesson(lessonsCount[0]);
             chapterDTO.setTotalLessonDone(lessonsCount[1]);
 
@@ -175,14 +175,14 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
         return courseLearning;
     }
 
-    private int[] calculateChapterDetails(ChapterDTO chapterDTO, User user) {
+    private int[] calculateChapterDetails(ChapterDTO chapterDTO, List<TrackCourse> listTrack) {
         int totalLesson = chapterDTO.getListLessons().size();
         int totalLessonDone = 0;
 
         Duration durationInChapter = Duration.ZERO;
 
         for (LessonDTO lessonDTO : chapterDTO.getListLessons()) {
-            TrackCourse trackCourse = trackCourseRepository.findTrackCourseByLessonIdAndUserId(lessonDTO.getId(), user.getId());
+            TrackCourse trackCourse = listTrack.stream().filter(track -> Objects.equals(track.getLesson().getId(), lessonDTO.getId())).findFirst().get();
             if (trackCourse.isDone()) {
                 lessonDTO.setDone(true);
                 totalLessonDone++;
