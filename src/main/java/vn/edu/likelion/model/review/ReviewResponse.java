@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -19,6 +21,9 @@ public class ReviewResponse {
 
     @JsonProperty("time_ago")
     private String timeAgo;
+
+    @JsonProperty("created_time")
+    private LocalDateTime reviewTime;
 
     private String thumbnail;
 
