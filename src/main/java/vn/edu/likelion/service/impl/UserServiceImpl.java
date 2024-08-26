@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserInterface {
         content = content.replace("[[name]]",user.getFullName());
 
 
-        content = content.replace("[[URL]]", "http://127.0.0.1:5500/Frontend/pages/Default/index.html");
+        content = content.replace("[[URL]]", "http://127.0.0.1:3000/Frontend/pages/Default/index.html");
         try {
             helper.setText(content,true);
         } catch (MessagingException e) {
