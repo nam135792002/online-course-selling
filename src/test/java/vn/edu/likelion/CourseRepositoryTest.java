@@ -6,11 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
-import vn.edu.likelion.entity.Category;
-import vn.edu.likelion.entity.Course;
-import vn.edu.likelion.entity.CourseDetail;
-import vn.edu.likelion.entity.InformationType;
+import vn.edu.likelion.entity.*;
+import vn.edu.likelion.repository.ChapterRepository;
 import vn.edu.likelion.repository.CourseRepository;
+import vn.edu.likelion.repository.LessonRepository;
 
 import java.util.List;
 
@@ -19,6 +18,8 @@ import java.util.List;
 @Rollback(value = false)
 public class CourseRepositoryTest {
     @Autowired private CourseRepository courseRepository;
+    @Autowired private ChapterRepository chapterRepository;
+    @Autowired private LessonRepository lessonRepository;
 
     @Test
     public void testCreateCourse(){
@@ -362,4 +363,41 @@ public class CourseRepositoryTest {
         Course savedCourse = courseRepository.save(course);
         Assertions.assertThat(savedCourse.getId()).isGreaterThan(0);
     }
+
+    @Test
+    public void createCSharpChaptersAndLessons() {
+        Course course = courseRepository.findById(3).get();
+
+        // Chapter 1: Introduction to C#
+        Chapter chapter1 = new Chapter("Introduction to C#", course);
+        Lesson lesson1_1 = new Lesson("Introduction to the Course",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1715842020/yvnvlrg32pg2bonr9hbi.mp4", chapter1);
+        Lesson lesson1_2 = new Lesson("What is C#?",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1715786427/swxwii04pqnrb2olowgy.mp4", chapter1);
+        Lesson lesson1_3 = new Lesson("Setting Up the Development Environment",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1717597291/gwxlhhukyywu2bavcl7h.mp4", chapter1);
+
+        // Chapter 2: C# Basics
+        Chapter chapter2 = new Chapter("C# Basics", course);
+        Lesson lesson2_1 = new Lesson("Variables and Data Types",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712569069/he6w39biizysgme3ceqd.mp4", chapter2);
+        Lesson lesson2_2 = new Lesson("Control Structures in C#",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712568598/pglcufliizx40hkdpa4o.mp4", chapter2);
+
+        // Chapter 3: Object-Oriented Programming in C#
+        Chapter chapter3 = new Chapter("Object-Oriented Programming in C#", course);
+        Lesson lesson3_1 = new Lesson("Introduction to OOP",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712567127/jizysfqfpdrd0m0lckq1.mp4", chapter3);
+        Lesson lesson3_2 = new Lesson("Classes and Objects",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712567824/ju7dv8b4qq6vjiasuepb.mp4", chapter3);
+
+        // Save Chapters and Lessons
+        chapterRepository.saveAll(List.of(chapter1, chapter2, chapter3));
+        lessonRepository.saveAll(List.of(lesson1_1, lesson1_2, lesson1_3, lesson2_1, lesson2_2, lesson3_1, lesson3_2));
+
+        // Assertions
+        Assertions.assertThat(chapterRepository.count()).isEqualTo(3);
+        Assertions.assertThat(lessonRepository.count()).isEqualTo(7);
+    }
+
 }

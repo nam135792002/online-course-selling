@@ -172,4 +172,156 @@ public class LessonRepositoryTest {
         Assertions.assertThat(listLessons.size()).isEqualTo(2);
     }
 
+    @Test
+    public void testCreateLesson11(){
+        Chapter chapter = chapterRepository.findById(11).get();
+        Lesson lesson1 = new Lesson("Introduction To The Course"
+                , "https://res.cloudinary.com/dqnoopa0x/video/upload/v1715842020/yvnvlrg32pg2bonr9hbi.mp4",
+                chapter);
+        Lesson lesson2 = new Lesson("Overview of C++ Programming",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1717597291/gwxlhhukyywu2bavcl7h.mp4",
+                chapter);
+        Lesson lesson3 = new Lesson("Installing Development Tools",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1715786427/swxwii04pqnrb2olowgy.mp4",
+                chapter);
+
+        List<Lesson> listLessons = lessonRepository.saveAll(List.of(lesson1, lesson2, lesson3));
+        Assertions.assertThat(listLessons.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void testCreateLesson12(){
+        Chapter chapter = chapterRepository.findById(12).get();
+        Lesson lesson1 = new Lesson("C++ Syntax and Structure"
+                , "https://res.cloudinary.com/dqnoopa0x/video/upload/v1715262877/mt58tqmn3v3lkdwxbob6.mp4",
+                chapter);
+        Lesson lesson2 = new Lesson("Variables in C++",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1714321050/dpqhwsy0beghkxjntwyu.mp4",
+                chapter);
+        Lesson lesson3 = new Lesson("Data Types in C++",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1714278963/wp1dcbjxjidpzilmy7gd.mp4",
+                chapter);
+        Lesson lesson4 = new Lesson("Control Flow in C++",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1714272313/ym5axecl2xvv5lx0pb70.mp4",
+                chapter);
+
+        List<Lesson> listLessons = lessonRepository.saveAll(List.of(lesson1, lesson2, lesson3, lesson4));
+        Assertions.assertThat(listLessons.size()).isEqualTo(4);
+    }
+
+    @Test
+    public void testCreateLesson13(){
+        Chapter chapter = chapterRepository.findById(13).get();
+        Lesson lesson1 = new Lesson("Functions in C++"
+                , "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712569069/he6w39biizysgme3ceqd.mp4",
+                chapter);
+        Lesson lesson2 = new Lesson("Function Overloading",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712568598/pglcufliizx40hkdpa4o.mp4",
+                chapter);
+        Lesson lesson3 = new Lesson("Recursion in C++",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712568466/fjl50mr4zmo0ebdzhbhr.mp4",
+                chapter);
+
+        List<Lesson> listLessons = lessonRepository.saveAll(List.of(lesson1, lesson2, lesson3));
+        Assertions.assertThat(listLessons.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void testCreateLesson14(){
+        Chapter chapter = chapterRepository.findById(14).get();
+        Lesson lesson1 = new Lesson("Introduction to OOP in C++"
+                , "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712568309/c9jzpqjwjzrvdxqpf5mh.mp4",
+                chapter);
+        Lesson lesson2 = new Lesson("Classes and Objects",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712568084/n9ql1gxe0sobe0eyuile.mp4",
+                chapter);
+
+        List<Lesson> listLessons = lessonRepository.saveAll(List.of(lesson1, lesson2));
+        Assertions.assertThat(listLessons.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void testCreateLesson15(){
+        Chapter chapter = chapterRepository.findById(15).get();
+        Lesson lesson1 = new Lesson("Inheritance in C++"
+                , "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712567824/ju7dv8b4qq6vjiasuepb.mp4",
+                chapter);
+        Lesson lesson2 = new Lesson("Polymorphism in C++",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712567127/jizysfqfpdrd0m0lckq1.mp4",
+                chapter);
+
+        List<Lesson> listLessons = lessonRepository.saveAll(List.of(lesson1, lesson2));
+        Assertions.assertThat(listLessons.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void testCreateLesson16(){
+        Chapter chapter = chapterRepository.findById(16).get();
+        Lesson lesson1 = new Lesson("Arrays in C++"
+                , "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712567075/gzk8psbinifezucesgnu.mp4",
+                chapter);
+        Lesson lesson2 = new Lesson("Multidimensional Arrays",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712567018/wt3ccvwiby77p3vjlqqb.mp4",
+                chapter);
+
+        List<Lesson> listLessons = lessonRepository.saveAll(List.of(lesson1, lesson2));
+        Assertions.assertThat(listLessons.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void testCreateLesson17(){
+        Chapter chapter = chapterRepository.findById(17).get();
+        Lesson lesson1 = new Lesson("Introduction to Generics in C++"
+                , "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712566919/bsidyrtzyor2fxvupgw3.mp4",
+                chapter);
+        Lesson lesson2 = new Lesson("Advanced Generics in C++",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712566482/a6kograxfxscnxhyshgf.mp4",
+                chapter);
+
+        List<Lesson> listLessons = lessonRepository.saveAll(List.of(lesson1, lesson2));
+        Assertions.assertThat(listLessons.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void testCreateLesson18(){
+        Chapter chapter = chapterRepository.findById(18).get();
+        Lesson lesson1 = new Lesson("Introduction to C++ Collections"
+                , "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712556089/srobmpx7pwqfhpvaqowv.mp4",
+                chapter);
+        Lesson lesson2 = new Lesson("Using Sets and Maps in C++",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712555884/qdem0r0wsveiwputamom.mp4",
+                chapter);
+
+        List<Lesson> listLessons = lessonRepository.saveAll(List.of(lesson1, lesson2));
+        Assertions.assertThat(listLessons.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void testCreateLesson19(){
+        Chapter chapter = chapterRepository.findById(19).get();
+        Lesson lesson1 = new Lesson("Introduction to C++ Streams"
+                , "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712555730/wk8xzjpwnqiheic2mxnb.mp4",
+                chapter);
+        Lesson lesson2 = new Lesson("File I/O in C++",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1712555481/wxblsi60ehws5sene54v.mp4",
+                chapter);
+
+        List<Lesson> listLessons = lessonRepository.saveAll(List.of(lesson1, lesson2));
+        Assertions.assertThat(listLessons.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void testCreateLesson20(){
+        Chapter chapter = chapterRepository.findById(20).get();
+        Lesson lesson1 = new Lesson("Working with Databases in C++"
+                , "https://res.cloudinary.com/dqnoopa0x/video/upload/v1710597751/wzvpwpjsfiwh1woyh7fi.mp4",
+                chapter);
+        Lesson lesson2 = new Lesson("Security Considerations in C++",
+                "https://res.cloudinary.com/dqnoopa0x/video/upload/v1710597751/wzvpwpjsfiwh1woyh7fi.mp4",
+                chapter);
+
+        List<Lesson> listLessons = lessonRepository.saveAll(List.of(lesson1, lesson2));
+        Assertions.assertThat(listLessons.size()).isEqualTo(2);
+    }
+
 }

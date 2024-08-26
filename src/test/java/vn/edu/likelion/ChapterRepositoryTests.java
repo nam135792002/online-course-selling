@@ -39,4 +39,22 @@ public class ChapterRepositoryTests {
         Assertions.assertThat(listChapters.size()).isEqualTo(10);
 
     }
+
+    @Test
+    public void createChapter01(){
+        Course course = courseRepository.findById(2).get();
+        Chapter chapter1 = new Chapter("Introduction to C++", course);
+        Chapter chapter2 = new Chapter("Setting Up Development Environment", course);
+        Chapter chapter3 = new Chapter("Basic Syntax and Structure", course);
+        Chapter chapter4 = new Chapter("Control Flow", course);
+        Chapter chapter5 = new Chapter("Functions in C++", course);
+        Chapter chapter6 = new Chapter("Object-Oriented Programming", course);
+        Chapter chapter7 = new Chapter("Pointers and Memory Management", course);
+        Chapter chapter8 = new Chapter("Advanced Data Structures", course);
+        Chapter chapter9 = new Chapter("Templates and Generics", course);
+        Chapter chapter10 = new Chapter("File Handling in C++", course);
+
+        List<Chapter> listChapters = chapterRepository.saveAll(List.of(chapter1, chapter2, chapter3, chapter4, chapter5, chapter6, chapter7, chapter8, chapter9, chapter10));
+        Assertions.assertThat(listChapters.size()).isEqualTo(10);
+    }
 }

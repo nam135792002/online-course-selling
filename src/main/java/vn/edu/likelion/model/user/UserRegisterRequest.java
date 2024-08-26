@@ -15,17 +15,17 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class UserRegisterRequest {
 
-    @NotEmpty(message = "Full name can not be empty")
-    @Length(min = 5, max = 45, message = "Full name have to 5-45 characters")
+    @NotEmpty(message = "Họ và tên không được để trống")
+    @Length(min = 5, max = 45, message = "Họ và tên phải có 5-45 ký tự")
     @JsonProperty("full_name")
     private String fullName;
 
-    @NotEmpty(message = "Email can not be empty")
-    @Email(message = "Must be a well-formed email address")
-    @Length(min = 5, max = 30, message = "Email have to 5-30 characters")
+    @NotEmpty(message = "Email không được để trống")
+    @Email(message = "Không đúng định dạng email")
+    @Length(min = 5, max = 30, message = "Email phải có 5-30 ký tự")
     private String email;
 
-    @NotEmpty(message = "Password can not be empty")
-    @Length(min = 8, max = 64, message = "Password have to 8-64 characters")
+    @NotEmpty(message = "Mật khẩu không được để trống")
+    @Length(min = 8, max = 64, message = "Mật khẩu phải có 8-64 ký tự")
     private String password;
 }
