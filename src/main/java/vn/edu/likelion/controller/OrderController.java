@@ -1,6 +1,7 @@
 package vn.edu.likelion.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +11,10 @@ import vn.edu.likelion.service.impl.OrderServiceImpl;
 
 @RestController
 @RequestMapping("/api/orders")
+@RequiredArgsConstructor
 @CrossOrigin
 public class OrderController {
-    @Autowired
-    private OrderServiceImpl orderService;
+    private final OrderServiceImpl orderService;
 
     @PostMapping("/create")
     public ResponseEntity<?> add(@RequestBody OrderRequest orderRequest){

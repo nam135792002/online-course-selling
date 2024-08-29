@@ -2,6 +2,7 @@ package vn.edu.likelion.controller;
 
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +15,11 @@ import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 @CrossOrigin
 public class AuthenticationController {
 
-    @Autowired
-    private AuthenticationServiceImpl authenticationService;
+    private final AuthenticationServiceImpl authenticationService;
 
     @PostMapping("/token")
     public ResponseEntity<?> login(@RequestBody @Valid AuthenticationRequest authenticationRequest){

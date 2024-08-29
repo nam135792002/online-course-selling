@@ -3,7 +3,6 @@ package vn.edu.likelion.service.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.edu.likelion.config.VNPayConfig;
 import vn.edu.likelion.entity.*;
@@ -30,11 +29,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderInterface {
     private final VNPayConfig vnPayConfig;
-    @Autowired private OrderRepository orderRepository;
-    @Autowired private UserRepository userRepository;
-    @Autowired private CourseRepository courseRepository;
-    @Autowired private ModelMapper modelMapper;
-    @Autowired private TrackCourseRepository trackCourseRepository;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final ModelMapper modelMapper;
+    private final TrackCourseRepository trackCourseRepository;
 
     @Override
     public PaymentDTO createVnPayPayment(HttpServletRequest request) {

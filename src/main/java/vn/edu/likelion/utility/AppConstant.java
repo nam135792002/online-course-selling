@@ -3,9 +3,8 @@ package vn.edu.likelion.utility;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AppConstant {
-    public final static String HOST = "https://onlinecourse.up.railway.app";
-    public final static String SUBJECT_REGISTER = "Please verify your registration to continue";
-    public final static String CONTENT_REGISTER = "<div style=\"font-size: 16px; letter-spacing: normal;\">Dear [[name]]," +
+    public static final String SUBJECT_REGISTER = "Please verify your registration to continue";
+    public static final String CONTENT_REGISTER = "<div style=\"font-size: 16px; letter-spacing: normal;\">Dear [[name]]," +
             "</div><div style=\"font-size: 16px; letter-spacing: normal;\"><i><br></i></div>" +
             "<div style=\"font-size: 16px; letter-spacing: normal;\">" +
             "<i>Click the link below to verify your registration:</i></div>" +
@@ -22,4 +21,9 @@ public class AppConstant {
         var context = SecurityContextHolder.getContext();
         return context.getAuthentication().getName();
     }
+
+    private AppConstant() {
+        throw new IllegalStateException("Utility class");
+    }
+
 }

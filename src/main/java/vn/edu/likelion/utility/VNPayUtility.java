@@ -11,6 +11,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class VNPayUtility {
+    private VNPayUtility() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static String hmacSHA512(final String key, final String data) {
         try {
             if (key == null || data == null) {
@@ -55,6 +59,7 @@ public class VNPayUtility {
         }
         return sb.toString();
     }
+
     public static String getPaymentURL(Map<String, String> paramsMap, boolean encodeKey) {
         return paramsMap.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())

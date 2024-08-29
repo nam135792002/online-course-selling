@@ -1,6 +1,6 @@
 package vn.edu.likelion.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +10,9 @@ import vn.edu.likelion.service.impl.ReviewServiceImpl;
 
 @RestController
 @RequestMapping("/api/reviews")
+@RequiredArgsConstructor
 public class ReviewController {
-    @Autowired
-    private ReviewServiceImpl reviewService;
+    private final ReviewServiceImpl reviewService;
 
     @PostMapping("/save")
     public ResponseEntity<?> add(@RequestBody ReviewRequest reviewRequest){

@@ -6,22 +6,24 @@ spring:
     name: course-online-selling
   profiles:
     active: prod
+  mail:
+    password: ${MAIL_APP_PASSWORD}
 
 springdoc:
   api-docs:
     path: /v3/api-docs
 
 jwt:
-  signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
+  signerKey: ${JWT_SIGNER_KEY}
   valid-duration: 3600
   refreshable-duration: 7200
 
 payment:
   vnPay:
-    url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
-    tmnCode: "HUWJVPVM"
-    secretKey: "JTQDOZVNOADCXAQDJTKVQDJXOPTJTPLF"
-    returnUrl: "http://127.0.0.1:3000/Frontend/pages/Process_Payment/Process_Payment.html"
+    url: ${PAPAYA_URL}
+    tmnCode: ${PAPAYA_TMN}
+    secretKey: ${PAPAYA_SECRETARY}
+    returnUrl: ${PAPAYA_RETURN_URL}
     version: "2.1.0"
     command: "pay"
     orderType: "other"

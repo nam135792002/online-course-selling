@@ -4,12 +4,11 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +18,7 @@ import vn.edu.likelion.entity.User;
 import vn.edu.likelion.exception.ApiException;
 import vn.edu.likelion.exception.CustomHttpStatus;
 import vn.edu.likelion.exception.ResourceNotFoundException;
+import vn.edu.likelion.model.ApiResponse;
 import vn.edu.likelion.model.user.UserInfoResponse;
 import vn.edu.likelion.model.user.UserRegisterRequest;
 import vn.edu.likelion.model.user.UserRegisterResponse;
@@ -34,15 +34,15 @@ import java.util.Properties;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserInterface {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private Cloudinary cloudinary;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final Cloudinary cloudinary;
+
+    @Value("${spring.mail.password}")
+    private String emailPassword;
 
     @Override
     public UserRegisterResponse addUser(UserRegisterRequest userRegisterRequest) {
@@ -64,12 +64,12 @@ public class UserServiceImpl implements UserInterface {
     }
 
     @Override
-    public String verifyEmail(String email) {
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "Email", email));
+    public ApiResponse verifyEmail(String email) {
+        if(!userRepository.existsUserByEmail(email)) throw new ResourceNotFoundException("User", "email", email);
+        if(userRepository.existsUserByEmailAndEnabled(email, true)) throw new ApiException(CustomHttpStatus.USER_IS_ACTIVE);
 
         userRepository.enable(email);
-        return "Xác nhận email thành công.";
+        return new ApiResponse("Xác nhận email thành công.");
     }
 
     @Override
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserInterface {
 
         if(thumbnail != null){
             deleteImageInCloudinary(userInDB.getAvatar());
-            Map r = null;
+            Map r;
             try {
                 r = cloudinary.uploader().upload(thumbnail.getBytes(),
                         ObjectUtils.asMap("resource_type","auto"));
@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserInterface {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
         mailSender.setUsername("tech.courses.895@gmail.com");
-        mailSender.setPassword("giug qtcr yjag occm");
+        mailSender.setPassword(emailPassword);
         mailSender.setDefaultEncoding("utf-8");
 
         Properties properties = new Properties();
@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserInterface {
         content = content.replace("[[name]]",user.getFullName());
 
 
-        content = content.replace("[[URL]]", "http://127.0.0.1:3000/Frontend/pages/Default/index.html");
+        content = content.replace("[[URL]]", "http://127.0.0.1:3000/Frontend/pages/BufferPage/BufferPage.html");
         try {
             helper.setText(content,true);
         } catch (MessagingException e) {

@@ -1,17 +1,13 @@
 package vn.edu.likelion.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.edu.likelion.entity.*;
-import vn.edu.likelion.exception.ApiException;
-import vn.edu.likelion.exception.CustomHttpStatus;
 import vn.edu.likelion.exception.ResourceNotFoundException;
-import vn.edu.likelion.model.chapter.ChapterDTO;
 import vn.edu.likelion.model.course.CourseReturnDetailResponse;
 import vn.edu.likelion.model.course.CourseReturnHomePageResponse;
 import vn.edu.likelion.model.course.CourseReturnResultSearch;
-import vn.edu.likelion.model.lesson.LessonDTO;
 import vn.edu.likelion.repository.CourseRepository;
 import vn.edu.likelion.repository.OrderRepository;
 import vn.edu.likelion.repository.ReviewRepository;
@@ -22,17 +18,13 @@ import vn.edu.likelion.utility.AppConstant;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CourseServiceImpl implements CourseInterface {
-    @Autowired
-    private CourseRepository courseRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final CourseRepository courseRepository;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+    private final ReviewRepository reviewRepository;
 
     @Override
     public List<CourseReturnHomePageResponse> listCourseReturnHomePage() {

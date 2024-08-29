@@ -31,6 +31,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorDetails.setPath(webRequest.getDescription(false));
         errorDetails.setStatus(HttpStatus.NOT_FOUND.value());
         errorDetails.addError(exception.getMessage());
+
+        exception.printStackTrace();
+
         return errorDetails;
     }
 
@@ -43,6 +46,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorDetails.setPath(webRequest.getDescription(false));
         errorDetails.setStatus(customHttpStatus.getCode());
         errorDetails.addError(customHttpStatus.getMessage());
+
+        exception.printStackTrace();
+
         return new ResponseEntity<>(errorDetails, customHttpStatus.getHttpStatusCode());
     }
 
@@ -57,6 +63,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorDetails.setPath(webRequest.getDescription(false));
         errorDetails.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorDetails.addError(exception.getMessage());
+
+        exception.printStackTrace();
+
         return errorDetails;
     }
 
@@ -70,6 +79,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorDetails.setPath(((ServletWebRequest) request).getRequest().getServletPath());
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
         fieldErrors.forEach(fieldError -> errorDetails.addError(fieldError.getDefaultMessage()));
+
+        ex.printStackTrace();
+
         return new ResponseEntity<>(errorDetails, headers, status);
     }
 

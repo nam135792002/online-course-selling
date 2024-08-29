@@ -24,8 +24,9 @@ public enum CustomHttpStatus {
     LOAD_IMAGE_FAILED(1017, "Upload ảnh thất bại",HttpStatus.BAD_REQUEST),
     USER_COMMENTED(1018, "Bạn đã đánh giá khóa học này",HttpStatus.CONFLICT),
     USER_NOT_COMMENT(1019, "Bạn không có quyền thay đổi review",HttpStatus.FORBIDDEN),
-    REVIEW_IS_EMPTY(1020, "Chưa có review nào dành cho khóa học này",HttpStatus.NOT_FOUND);
-
+    REVIEW_IS_EMPTY(1020, "Chưa có review nào dành cho khóa học này",HttpStatus.NOT_FOUND),
+    USER_IS_ACTIVE(1021, "Tài khoản đã được kích hoạt",HttpStatus.CONFLICT),
+    LOGIN_FAILED(1022, "Đăng nhập thất bại",HttpStatus.UNAUTHORIZED);
 
     private int code;
     private String message;

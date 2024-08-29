@@ -1,5 +1,6 @@
 package vn.edu.likelion.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
+@RequiredArgsConstructor
 @CrossOrigin
 public class CourseController {
-
-    @Autowired
-    private CourseServiceImpl courseService;
+    private final CourseServiceImpl courseService;
 
     @GetMapping("/home-page")
     public ResponseEntity<?> getAllReturnHomePage(){

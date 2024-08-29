@@ -1,7 +1,7 @@
 package vn.edu.likelion.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.edu.likelion.entity.Course;
 import vn.edu.likelion.entity.Review;
@@ -24,17 +24,13 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewInterface {
-    @Autowired
-    private ReviewRepository reviewRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CourseRepository courseRepository;
-    @Autowired
-    private OrderRepository orderRepository;
+    private final ReviewRepository reviewRepository;
+    private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public ReviewResponse createReview(ReviewRequest reviewRequest) {

@@ -31,15 +31,13 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors(cors->{
-            cors.configurationSource(request -> {
-                CorsConfiguration corsConfig = new CorsConfiguration();
-                corsConfig.addAllowedOrigin("*");
-                corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-                corsConfig.addAllowedHeader("*");
-                return corsConfig;
-            });
-        });
+        httpSecurity.cors(cors-> cors.configurationSource(request -> {
+            CorsConfiguration corsConfig = new CorsConfiguration();
+            corsConfig.addAllowedOrigin("*");
+            corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+            corsConfig.addAllowedHeader("*");
+            return corsConfig;
+        }));
 
         httpSecurity.authorizeHttpRequests(request ->
                         request.requestMatchers("/api/orders/**", "/api/users/my-info",

@@ -1,7 +1,7 @@
 package vn.edu.likelion.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +12,7 @@ import vn.edu.likelion.entity.User;
 import vn.edu.likelion.exception.ApiException;
 import vn.edu.likelion.exception.CustomHttpStatus;
 import vn.edu.likelion.exception.ResourceNotFoundException;
+import vn.edu.likelion.model.ApiResponse;
 import vn.edu.likelion.model.chapter.ChapterDTO;
 import vn.edu.likelion.model.course.CourseReturnLearningResponse;
 import vn.edu.likelion.model.lesson.LessonDTO;
@@ -27,19 +28,16 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class TrackCourseServiceImpl implements TrackCourseInterface {
-    @Autowired
-    private TrackCourseRepository trackCourseRepository;
-    @Autowired
-    private CourseRepository courseRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private LessonRepository lessonRepository;
+    private final TrackCourseRepository trackCourseRepository;
+    private final CourseRepository courseRepository;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+    private final LessonRepository lessonRepository;
+
+
 
     @Override
     public CourseReturnLearningResponse trackCourseDetail(String slug, Integer lessonId) {
@@ -59,7 +57,7 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
     }
 
     @Override
-    public String confirmLesson(Integer lessonId, LocalTime duration) {
+    public ApiResponse confirmLesson(Integer lessonId, LocalTime duration) {
         String email = AppConstant.getEmailFromContextHolder();
 
         User user = userRepository.findUserByEmail(email)
@@ -75,7 +73,7 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
         if(duration != null){
             trackCourse.setTrackLesson(duration);
             trackCourseRepository.save(trackCourse);
-            return "SUCCESS";
+            return new ApiResponse("SUCCESS");
         }else{
 
             List<TrackCourse> listTrackCourses = trackCourseRepository
@@ -102,10 +100,10 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
                 if(!trackCourseNext.isUnlock()){
                     trackCourseRepository.updateUnlock(lessonNext.getId(), user.getId());
                 }
-                return "SUCCESS";
+                return new ApiResponse("SUCCESS");
             }else{
                 trackCourseRepository.updateLessonLastDone(trackCourse.getLesson().getId(), trackCourse.getUser().getId());
-                return "Bạn đã hoàn thành khóa học này";
+                return new ApiResponse("Bạn đã hoàn thành khóa học này");
             }
         }
     }
@@ -135,14 +133,12 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
             trackCourseRepository.updateCurrentLesson(trackCourse.getId());
             return null;
         }else{
-            Optional<TrackCourse> trackCourseCurrent = listTrack.stream().filter(TrackCourse::isCurrent).findFirst();
+            if(firstIsCurrent.isPresent()){
+                courseLearning.setLessonCurrent(firstIsCurrent.get().getLesson().getId());
+                courseLearning.setLessonUrl(firstIsCurrent.get().getLesson().getUrl());
+                courseLearning.setCurrentTime(firstIsCurrent.get().getTrackLesson());
 
-            if(trackCourseCurrent.isPresent()){
-                courseLearning.setLessonCurrent(trackCourseCurrent.get().getLesson().getId());
-                courseLearning.setLessonUrl(trackCourseCurrent.get().getLesson().getUrl());
-                courseLearning.setCurrentTime(trackCourseCurrent.get().getTrackLesson());
-
-                int currentIndex = listTrack.indexOf(trackCourseCurrent.get());
+                int currentIndex = listTrack.indexOf(firstIsCurrent.get());
                 TrackCourse trackCoursePre = (currentIndex > 0) ? listTrack.get(currentIndex - 1) : null;
                 TrackCourse trackCourseNext = (currentIndex < listTrack.size() - 1) ? listTrack.get(currentIndex + 1) : null;
                 courseLearning.setLessonPre(trackCoursePre != null ? trackCoursePre.getLesson().getId() : null);
@@ -171,7 +167,6 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
         courseLearning.setTotalLesson(totalLesson);
         courseLearning.setTotalLessonDone(totalLessonDone);
         courseLearning.setAverageLesson(calculateAverageLessonDone(totalLesson, totalLessonDone));
-
         return courseLearning;
     }
 
@@ -182,14 +177,17 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
         Duration durationInChapter = Duration.ZERO;
 
         for (LessonDTO lessonDTO : chapterDTO.getListLessons()) {
-            TrackCourse trackCourse = listTrack.stream().filter(track -> Objects.equals(track.getLesson().getId(), lessonDTO.getId())).findFirst().get();
-            if (trackCourse.isDone()) {
-                lessonDTO.setDone(true);
-                totalLessonDone++;
+            Optional<TrackCourse> trackCourse = listTrack.stream().filter(track -> Objects.equals(track.getLesson().getId(), lessonDTO.getId())).findFirst();
+            if(trackCourse.isPresent()){
+                if (trackCourse.get().isDone()) {
+                    lessonDTO.setDone(true);
+                    totalLessonDone++;
+                }
+                lessonDTO.setUnlock(trackCourse.get().isUnlock());
+                durationInChapter = durationInChapter.plus(Duration.ofMinutes(lessonDTO.getDuration().getMinute())
+                        .plusSeconds(lessonDTO.getDuration().getSecond()));
+
             }
-            lessonDTO.setUnlock(trackCourse.isUnlock());
-            durationInChapter = durationInChapter.plus(Duration.ofMinutes(lessonDTO.getDuration().getMinute())
-                    .plusSeconds(lessonDTO.getDuration().getSecond()));
         }
 
         chapterDTO.setDurationChapter(convertDurationToLocalTime(durationInChapter));

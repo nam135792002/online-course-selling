@@ -1,7 +1,7 @@
 package vn.edu.likelion.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +11,10 @@ import vn.edu.likelion.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 @CrossOrigin
 public class UserController {
-
-    @Autowired
-    private UserServiceImpl userService;
+    private final UserServiceImpl userService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid UserRegisterRequest userRegisterRequest){
@@ -30,11 +29,6 @@ public class UserController {
     @GetMapping("/my-info")
     public ResponseEntity<?> myInfo(){
         return ResponseEntity.ok(userService.getMyInfo());
-    }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(){
-        return ResponseEntity.ok("Success");
     }
 
     @PutMapping("/update-profile")
