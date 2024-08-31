@@ -1,0 +1,29 @@
+server:
+  port: 9999
+
+spring:
+  application:
+    name: course-online-selling
+  profiles:
+    active: prod
+  mail:
+    password: ${MAIL_APP_PASSWORD}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+
+jwt:
+  signerKey: ${JWT_SIGNER_KEY}
+  valid-duration: 3600
+  refreshable-duration: 7200
+
+payment:
+  vnPay:
+    url: ${PAPAYA_URL}
+    tmnCode: ${PAPAYA_TMN}
+    secretKey: ${PAPAYA_SECRETARY}
+    returnUrl: ${PAPAYA_RETURN_URL}
+    version: "2.1.0"
+    command: "pay"
+    orderType: "other"
