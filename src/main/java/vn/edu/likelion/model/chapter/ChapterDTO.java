@@ -1,6 +1,5 @@
 package vn.edu.likelion.model.chapter;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,14 +22,22 @@ public class ChapterDTO {
     private String name;
 
     @JsonProperty("total_lesson")
-    private int totalLesson;
+    private long totalLesson;
 
     @JsonProperty("total_lesson_done")
-    private int totalLessonDone;
+    private long totalLessonDone;
 
     @JsonProperty("duration_chapter")
     private LocalTime durationChapter;
 
     @JsonProperty("lessons")
     private List<LessonDTO> listLessons = new ArrayList<>();
+
+    public ChapterDTO(Integer id, String name, long totalLesson, long totalLessonDone, LocalTime duration) {
+        this.id = id;
+        this.name = name;
+        this.totalLesson = totalLesson;
+        this.totalLessonDone = totalLessonDone;
+        this.durationChapter = duration;
+    }
 }

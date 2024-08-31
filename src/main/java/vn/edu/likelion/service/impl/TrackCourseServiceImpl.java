@@ -152,21 +152,14 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
             }
         }
 
-        int totalLesson = 0;
-        int totalLessonDone = 0;
-
-        for (ChapterDTO chapterDTO : courseLearning.getListChapters()) {
-            int[] lessonsCount = calculateChapterDetails(chapterDTO, listTrack);
-            chapterDTO.setTotalLesson(lessonsCount[0]);
-            chapterDTO.setTotalLessonDone(lessonsCount[1]);
-
-            totalLesson += lessonsCount[0];
-            totalLessonDone += lessonsCount[1];
+        List<ChapterDTO> listChapters = trackCourseRepository.printAllChapter(course.getId(), user.getId(),
+                Sort.by(Sort.Direction.ASC, "id"));
+        for (ChapterDTO chapterDTO : listChapters){
+            List<LessonDTO> listLessons = trackCourseRepository.printALlLesson(chapterDTO.getId(), user.getId(),
+                    Sort.by(Sort.Direction.ASC, "id"));
+            chapterDTO.setListLessons(listLessons);
         }
 
-        courseLearning.setTotalLesson(totalLesson);
-        courseLearning.setTotalLessonDone(totalLessonDone);
-        courseLearning.setAverageLesson(calculateAverageLessonDone(totalLesson, totalLessonDone));
         return courseLearning;
     }
 
