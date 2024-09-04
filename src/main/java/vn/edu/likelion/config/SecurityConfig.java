@@ -1,6 +1,10 @@
 package vn.edu.likelion.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -19,10 +23,18 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
+@SecurityScheme(
+        name = "Bear Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
+@OpenAPIDefinition(servers = {@Server(url = "/")})
 public class SecurityConfig {
 
-    @Autowired @Lazy
-    private CustomJwtDecoder jwtDecoder;
+    @Lazy
+    private final CustomJwtDecoder jwtDecoder;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
