@@ -20,7 +20,6 @@ import vn.edu.likelion.repository.*;
 import vn.edu.likelion.service.TrackCourseInterface;
 import vn.edu.likelion.utility.AppConstant;
 
-import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
@@ -109,7 +108,7 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
     }
 
     private CourseReturnLearningResponse buildCourseLearningResponse(Course course, User user, Integer lessonId) {
-        CourseReturnLearningResponse courseLearning = modelMapper.map(course, CourseReturnLearningResponse.class);
+        CourseReturnLearningResponse courseLearning = trackCourseRepository.statistical(course.getId(), user.getId());
 
         List<TrackCourse> listTrack = trackCourseRepository.findAllByCourseAndUser(courseLearning.getId(), user.getId(),
                 Sort.by(Sort.Direction.ASC, "id"));
@@ -152,53 +151,26 @@ public class TrackCourseServiceImpl implements TrackCourseInterface {
             }
         }
 
-        List<ChapterDTO> listChapters = trackCourseRepository.printAllChapter(course.getId(), user.getId(),
-                Sort.by(Sort.Direction.ASC, "id"));
+        List<ChapterDTO> listChapters = trackCourseRepository.printAllChapter(course.getId(), user.getId());
+
         for (ChapterDTO chapterDTO : listChapters){
+            chapterDTO.setDurationChapter(convertDurationToLocalTime(chapterDTO.getTotalSecondDuration()));
             List<LessonDTO> listLessons = trackCourseRepository.printALlLesson(chapterDTO.getId(), user.getId(),
                     Sort.by(Sort.Direction.ASC, "id"));
             chapterDTO.setListLessons(listLessons);
         }
 
+        courseLearning.setListChapters(listChapters);
+
         return courseLearning;
     }
 
-    private int[] calculateChapterDetails(ChapterDTO chapterDTO, List<TrackCourse> listTrack) {
-        int totalLesson = chapterDTO.getListLessons().size();
-        int totalLessonDone = 0;
-
-        Duration durationInChapter = Duration.ZERO;
-
-        for (LessonDTO lessonDTO : chapterDTO.getListLessons()) {
-            Optional<TrackCourse> trackCourse = listTrack.stream().filter(track -> Objects.equals(track.getLesson().getId(), lessonDTO.getId())).findFirst();
-            if(trackCourse.isPresent()){
-                if (trackCourse.get().isDone()) {
-                    lessonDTO.setDone(true);
-                    totalLessonDone++;
-                }
-                lessonDTO.setUnlock(trackCourse.get().isUnlock());
-                durationInChapter = durationInChapter.plus(Duration.ofMinutes(lessonDTO.getDuration().getMinute())
-                        .plusSeconds(lessonDTO.getDuration().getSecond()));
-
-            }
-        }
-
-        chapterDTO.setDurationChapter(convertDurationToLocalTime(durationInChapter));
-
-        return new int[]{totalLesson, totalLessonDone};
-    }
-
-    private LocalTime convertDurationToLocalTime(Duration duration) {
-        long hours = duration.toHours();
-        long minutes = duration.toMinutes() % 60;
-        long seconds = duration.getSeconds() % 60;
+    private LocalTime convertDurationToLocalTime(long totalSeconds) {
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
 
         return LocalTime.of((int) hours, (int) minutes, (int) seconds);
-    }
-
-    private int calculateAverageLessonDone(int totalLesson, int totalLessonDone) {
-        if (totalLesson == 0) return 0;
-        return Math.round((float) totalLessonDone * 100 / totalLesson);
     }
 
 }

@@ -23,4 +23,12 @@ public class LessonDTO {
 
     @JsonProperty("is_unlock")
     private boolean isUnlock;
+
+    public LessonDTO(Integer id, String name, LocalTime duration, boolean isDone, boolean isUnlock) {
+        this.id = id;
+        this.name = name;
+        this.duration = duration;
+        this.isDone = isDone;
+        this.isUnlock = isUnlock;
+    }
 }

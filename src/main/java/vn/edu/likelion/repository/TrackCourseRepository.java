@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import vn.edu.likelion.entity.TrackCourse;
 import vn.edu.likelion.model.chapter.ChapterDTO;
+import vn.edu.likelion.model.course.CourseReturnLearningResponse;
 import vn.edu.likelion.model.lesson.LessonDTO;
 
 import java.util.List;
@@ -19,13 +20,24 @@ public interface TrackCourseRepository extends JpaRepository<TrackCourse, Intege
     @Query("select t from TrackCourse t where t.lesson.chapter.course.id = ?1 and t.user.id = ?2")
     List<TrackCourse> findAllByCourseAndUser(Integer courseId, Integer userId, Sort sort);
 
-    @Query("select new vn.edu.likelion.model.chapter.ChapterDTO(t.lesson.chapter.id, t.lesson.chapter.name, count(t), " +
+    @Query("select new vn.edu.likelion.model.course.CourseReturnLearningResponse( t.lesson.chapter.course.id, t.lesson.chapter.course.title, " +
+            "count(t), " +
             "sum(case when t.isDone = true then 1 else 0 end), " +
-            "sum(t.lesson.duration) " +
+            "(sum(case when t.isDone = true then 1 else 0 end) * 100.0) / count(t)) " +
             "from TrackCourse t " +
             "where t.lesson.chapter.course.id = ?1 and t.user.id = ?2 " +
-            "group by t.lesson.chapter.id, t.lesson.chapter.name")
-    List<ChapterDTO> printAllChapter(Integer courseId, Integer userId, Sort sort);
+            "group by t.lesson.chapter.course.id, t.lesson.chapter.course.title")
+    CourseReturnLearningResponse statistical(Integer courseId, Integer userId);
+
+
+    @Query("select new vn.edu.likelion.model.chapter.ChapterDTO(t.lesson.chapter.id, t.lesson.chapter.name, count(t), " +
+            "sum(case when t.isDone = true then 1 else 0 end), " +
+            "sum((HOUR(t.lesson.duration) * 3600) + (MINUTE(t.lesson.duration) * 60) + SECOND(t.lesson.duration))) " +
+            "from TrackCourse t " +
+            "where t.lesson.chapter.course.id = ?1 and t.user.id = ?2 " +
+            "group by t.lesson.chapter.id, t.lesson.chapter.name " +
+            "order by t.lesson.chapter.id")
+    List<ChapterDTO> printAllChapter(Integer courseId, Integer userId);
 
 
     @Query("select new vn.edu.likelion.model.lesson.LessonDTO(t.lesson.id, t.lesson.name, t.lesson.duration, t.isDone, t.isUnlock) " +

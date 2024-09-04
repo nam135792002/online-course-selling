@@ -1,5 +1,6 @@
 package vn.edu.likelion.model.course;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,10 +26,10 @@ public class CourseReturnLearningResponse {
     List<ChapterDTO> listChapters = new ArrayList<>();
 
     @JsonProperty("total_lesson_of_course")
-    int totalLesson;
+    long totalLesson;
 
     @JsonProperty("total_lesson_done_of_course")
-    int totalLessonDone;
+    long totalLessonDone;
 
     @JsonProperty("average_lesson")
     int averageLesson;
@@ -47,4 +48,15 @@ public class CourseReturnLearningResponse {
 
     @JsonProperty("current_time")
     LocalTime currentTime;
+
+    @JsonIgnore
+    double lessonDonePer;
+
+    public CourseReturnLearningResponse(Integer id, String title, long totalLesson, long totalLessonDone, double lessonDonePer) {
+        this.id = id;
+        this.title = title;
+        this.totalLesson = totalLesson;
+        this.totalLessonDone = totalLessonDone;
+        this.averageLesson = (int)Math.round(lessonDonePer);
+    }
 }
