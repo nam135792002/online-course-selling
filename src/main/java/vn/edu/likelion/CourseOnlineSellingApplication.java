@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -21,7 +22,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         externalDocs = @ExternalDocumentation(
                 description = "Spring Boot Sell Online Courses App Documentation",
                 url = "https://github.com/nam135792002/online-course-selling"
-        )
+        ),
+        servers = {@Server(url = "https://onlinecourse.up.railway.app/", description = "host deploy railway")}
 )
 public class CourseOnlineSellingApplication {
 
