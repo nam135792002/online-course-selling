@@ -5,7 +5,7 @@ import vn.edu.likelion.model.course.CourseReturnLearningResponse;
 
 import java.time.LocalTime;
 
-public interface TrackCourseInterface {
+public interface ITrackCourseService {
     CourseReturnLearningResponse trackCourseDetail(String slug, Integer lessonId);
     ApiResponse confirmLesson(Integer lessonId, LocalTime duration);
 }

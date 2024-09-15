@@ -12,14 +12,14 @@ import vn.edu.likelion.repository.CourseRepository;
 import vn.edu.likelion.repository.OrderRepository;
 import vn.edu.likelion.repository.ReviewRepository;
 import vn.edu.likelion.repository.UserRepository;
-import vn.edu.likelion.service.CourseInterface;
+import vn.edu.likelion.service.ICourseService;
 import vn.edu.likelion.utility.AppConstant;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CourseServiceImpl implements CourseInterface {
+public class CourseServiceImpl implements ICourseService {
     private final CourseRepository courseRepository;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;

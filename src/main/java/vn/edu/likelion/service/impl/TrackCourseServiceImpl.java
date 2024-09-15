@@ -1,7 +1,6 @@
 package vn.edu.likelion.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,7 @@ import vn.edu.likelion.model.chapter.ChapterDTO;
 import vn.edu.likelion.model.course.CourseReturnLearningResponse;
 import vn.edu.likelion.model.lesson.LessonDTO;
 import vn.edu.likelion.repository.*;
-import vn.edu.likelion.service.TrackCourseInterface;
+import vn.edu.likelion.service.ITrackCourseService;
 import vn.edu.likelion.utility.AppConstant;
 
 import java.time.LocalTime;
@@ -28,12 +27,11 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class TrackCourseServiceImpl implements TrackCourseInterface {
+public class TrackCourseServiceImpl implements ITrackCourseService {
     private final TrackCourseRepository trackCourseRepository;
     private final CourseRepository courseRepository;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
     private final LessonRepository lessonRepository;
 
 

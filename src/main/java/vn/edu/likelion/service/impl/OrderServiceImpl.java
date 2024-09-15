@@ -16,7 +16,7 @@ import vn.edu.likelion.repository.CourseRepository;
 import vn.edu.likelion.repository.OrderRepository;
 import vn.edu.likelion.repository.TrackCourseRepository;
 import vn.edu.likelion.repository.UserRepository;
-import vn.edu.likelion.service.OrderInterface;
+import vn.edu.likelion.service.IOrderService;
 import vn.edu.likelion.utility.AppConstant;
 import vn.edu.likelion.utility.VNPayUtility;
 
@@ -27,7 +27,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class OrderServiceImpl implements OrderInterface {
+public class OrderServiceImpl implements IOrderService {
     private final VNPayConfig vnPayConfig;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;

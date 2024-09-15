@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -21,20 +22,19 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.Arrays;
 
 @Configuration
+@OpenAPIDefinition(servers = {@Server(url = "/", description = "any description of Server URL")})
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 @SecurityScheme(
         name = "Bear Authentication",
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
         scheme = "bearer"
 )
-@OpenAPIDefinition(servers = {@Server(url = "/")})
 public class SecurityConfig {
 
-    @Lazy
-    private final CustomJwtDecoder jwtDecoder;
+    @Lazy @Autowired
+    private CustomJwtDecoder jwtDecoder;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -55,7 +55,7 @@ public class SecurityConfig {
                         request.requestMatchers("/api/orders/**", "/api/users/my-info",
                                         "/api/course/learning/**", "/api/users/update-profile",
                                         "/api/reviews/save", "/api/reviews/update",
-                                        "/api/reviews/delete/**").authenticated()
+                                        "/api/reviews/delete/**", "/api/auth/logout", "/api/users/change-password").authenticated()
                                 .requestMatchers("/api/users/delete").hasRole("ADMIN")
                                 .anyRequest().permitAll());
 

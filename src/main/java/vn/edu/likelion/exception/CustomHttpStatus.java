@@ -26,7 +26,16 @@ public enum CustomHttpStatus {
     USER_NOT_COMMENT(1019, "Bạn không có quyền thay đổi review",HttpStatus.FORBIDDEN),
     REVIEW_IS_EMPTY(1020, "Chưa có review nào dành cho khóa học này",HttpStatus.NOT_FOUND),
     USER_IS_ACTIVE(1021, "Tài khoản đã được kích hoạt",HttpStatus.CONFLICT),
-    LOGIN_FAILED(1022, "Đăng nhập thất bại",HttpStatus.UNAUTHORIZED);
+    LOGIN_FAILED(1022, "Đăng nhập thất bại",HttpStatus.UNAUTHORIZED),
+    NOT_MATCH_PASSWORD(1023, "Mật khẩu cũ không trùng khớp",HttpStatus.CONFLICT),
+    OLD_DUPLICATE_NEW_PASSWORD(1024, "Mật khẩu mới trùng với mật khẩu hiện tại",HttpStatus.CONFLICT),
+    TOKEN_NOT_EXISTED(1025, "Mã xác thực không hợp lệ",HttpStatus.NOT_FOUND),
+    TOKEN_EXPIRED(1026, "Mã xác thực đã hết hạn",HttpStatus.BAD_REQUEST),
+    TOKEN_IS_ACTIVE(1027, "Mã đã được xác thực trước đó",HttpStatus.BAD_REQUEST);
+
+
+
+
 
     private int code;
     private String message;

@@ -15,7 +15,7 @@ import vn.edu.likelion.repository.CourseRepository;
 import vn.edu.likelion.repository.OrderRepository;
 import vn.edu.likelion.repository.ReviewRepository;
 import vn.edu.likelion.repository.UserRepository;
-import vn.edu.likelion.service.ReviewInterface;
+import vn.edu.likelion.service.IReviewService;
 import vn.edu.likelion.utility.AppConstant;
 
 import java.time.Duration;
@@ -25,7 +25,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class ReviewServiceImpl implements ReviewInterface {
+public class ReviewServiceImpl implements IReviewService {
     private final ReviewRepository reviewRepository;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;

@@ -6,7 +6,7 @@ import vn.edu.likelion.model.course.CourseReturnResultSearch;
 
 import java.util.List;
 
-public interface CourseInterface {
+public interface ICourseService {
     List<CourseReturnHomePageResponse> listCourseReturnHomePage();
     CourseReturnDetailResponse getCourseDetail(String slug);
     List<CourseReturnResultSearch> listCourseByKeyword(String keyword);

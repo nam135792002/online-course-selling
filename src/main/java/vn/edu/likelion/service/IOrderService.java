@@ -7,7 +7,7 @@ import vn.edu.likelion.model.payment.PaymentDTO;
 
 import java.util.List;
 
-public interface OrderInterface {
+public interface IOrderService {
     PaymentDTO createVnPayPayment(HttpServletRequest request);
     OrderResponse createOrder(OrderRequest orderRequest);
     List<OrderResponse> getMyCourse();

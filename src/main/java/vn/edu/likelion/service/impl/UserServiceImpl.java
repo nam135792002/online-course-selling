@@ -2,13 +2,8 @@ package vn.edu.likelion.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,26 +18,21 @@ import vn.edu.likelion.model.user.UserInfoResponse;
 import vn.edu.likelion.model.user.UserRegisterRequest;
 import vn.edu.likelion.model.user.UserRegisterResponse;
 import vn.edu.likelion.repository.UserRepository;
-import vn.edu.likelion.service.UserInterface;
+import vn.edu.likelion.service.IUserService;
 import vn.edu.likelion.utility.AppConstant;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.Map;
-import java.util.Properties;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserInterface {
+public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final Cloudinary cloudinary;
-
-    @Value("${spring.mail.password}")
-    private String emailPassword;
 
     @Override
     public UserRegisterResponse addUser(UserRegisterRequest userRegisterRequest) {
@@ -58,8 +48,9 @@ public class UserServiceImpl implements UserInterface {
         user.setRole(new Role(2));
         user.setEnabled(false);
 
-        sendEmail(user);
+        String urlAuth = "http://127.0.0.1:3000/Frontend/pages/BufferPage/BufferPage.html";
         User savedUser = userRepository.save(user);
+        AppConstant.sendEmail(savedUser, urlAuth, AppConstant.SUBJECT_REGISTER, AppConstant.CONTENT_REGISTER);
         return modelMapper.map(savedUser, UserRegisterResponse.class);
     }
 
@@ -121,44 +112,24 @@ public class UserServiceImpl implements UserInterface {
         }
     }
 
-    private void sendEmail(User user){
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-        mailSender.setUsername("tech.courses.895@gmail.com");
-        mailSender.setPassword(emailPassword);
-        mailSender.setDefaultEncoding("utf-8");
+    @Override
+    public ApiResponse changePassword(String oldPassword, String newPassword) {
+        String email = AppConstant.getEmailFromContextHolder();
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "email", email));
 
-        Properties properties = new Properties();
-        properties.setProperty("mail.smtp.auth","true");
-        properties.setProperty("mail.smtp.starttls.enable","true");
-        mailSender.setJavaMailProperties(properties);
-
-        String toAddress = user.getEmail();
-
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-
-        try {
-            helper.setFrom("tech.courses.895@gmail.com","Tech Courses");
-            helper.setTo(toAddress);
-            helper.setSubject(AppConstant.SUBJECT_REGISTER);
-        } catch (MessagingException | UnsupportedEncodingException e) {
-            throw new ApiException(CustomHttpStatus.ERROR_SEND_EMAIL);
+        boolean checkOldPass = passwordEncoder.matches(oldPassword, user.getPassword());
+        boolean compareOldToNewPassword = passwordEncoder.matches(newPassword, user.getPassword());
+        if(!checkOldPass){
+            throw new ApiException(CustomHttpStatus.NOT_MATCH_PASSWORD);
+        }
+        if(compareOldToNewPassword){
+            throw new ApiException(CustomHttpStatus.OLD_DUPLICATE_NEW_PASSWORD);
         }
 
-        String content = AppConstant.CONTENT_REGISTER;
-
-
-        content = content.replace("[[name]]",user.getFullName());
-
-
-        content = content.replace("[[URL]]", "http://127.0.0.1:3000/Frontend/pages/BufferPage/BufferPage.html");
-        try {
-            helper.setText(content,true);
-        } catch (MessagingException e) {
-            throw new ApiException(CustomHttpStatus.ERROR_SEND_EMAIL);
-        }
-        mailSender.send(message);
+        String passwordEncode = passwordEncoder.encode(newPassword);
+        user.setPassword(passwordEncode);
+        userRepository.save(user);
+        return new ApiResponse("Thay đổi mật khẩu thành công");
     }
 }

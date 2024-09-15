@@ -20,7 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         ),
         externalDocs = @ExternalDocumentation(
                 description = "Spring Boot Sell Online Courses App Documentation",
-                url = "https://github.com/nam135792002/online-course-selling"
+                url = "https://onlinecourse.up.railway.app/swagger-ui/index.html"
         )
 )
 public class CourseOnlineSellingApplication {

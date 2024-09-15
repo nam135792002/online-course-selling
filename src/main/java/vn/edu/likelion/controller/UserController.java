@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import vn.edu.likelion.model.user.ChangePassword;
 import vn.edu.likelion.model.user.UserRegisterRequest;
 import vn.edu.likelion.service.impl.UserServiceImpl;
 
@@ -35,5 +36,11 @@ public class UserController {
     public ResponseEntity<?> updateProfile(@RequestParam(value = "full_name", required = false) String fullName,
                                            @RequestParam(value = "image", required = false) MultipartFile multipartFile){
         return ResponseEntity.ok(userService.updateUser(fullName, multipartFile));
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> updatePassword(@RequestBody @Valid ChangePassword changePassword){
+        return ResponseEntity.ok(userService.changePassword(changePassword.getOldPassword(),
+                changePassword.getNewPassword()));
     }
 }

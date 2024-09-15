@@ -5,7 +5,7 @@ import vn.edu.likelion.model.review.ReviewResponse;
 
 import java.util.List;
 
-public interface ReviewInterface {
+public interface IReviewService {
     ReviewResponse createReview(ReviewRequest reviewRequest);
     List<ReviewResponse> listAll(String slug);
     ReviewResponse updateReview(ReviewRequest reviewRequest);

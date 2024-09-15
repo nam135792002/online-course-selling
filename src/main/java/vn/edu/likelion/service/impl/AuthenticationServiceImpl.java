@@ -9,33 +9,38 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.edu.likelion.entity.InvalidatedToken;
+import vn.edu.likelion.entity.PasswordResetToken;
 import vn.edu.likelion.entity.User;
 import vn.edu.likelion.exception.ApiException;
 import vn.edu.likelion.exception.CustomHttpStatus;
 import vn.edu.likelion.exception.ResourceNotFoundException;
-import vn.edu.likelion.model.user.AuthenticationRequest;
-import vn.edu.likelion.model.user.AuthenticationResponse;
-import vn.edu.likelion.model.user.LogoutRequest;
-import vn.edu.likelion.model.user.RefreshRequest;
+import vn.edu.likelion.model.ApiResponse;
+import vn.edu.likelion.model.user.*;
 import vn.edu.likelion.repository.InvalidatedTokenRepository;
+import vn.edu.likelion.repository.PasswordResetTokenRepository;
 import vn.edu.likelion.repository.UserRepository;
-import vn.edu.likelion.service.AuthenticationInterface;
+import vn.edu.likelion.service.IAuthenticationService;
+import vn.edu.likelion.utility.AppConstant;
 
 import java.text.ParseException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
-public class AuthenticationServiceImpl implements AuthenticationInterface {
+public class AuthenticationServiceImpl implements IAuthenticationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final InvalidatedTokenRepository invalidatedTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Value("${jwt.signerKey}")
     private String signerKey;
@@ -50,7 +55,9 @@ public class AuthenticationServiceImpl implements AuthenticationInterface {
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
         User user = userRepository.findUserByEmail(authenticationRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "Email", authenticationRequest.getEmail()));
+
         if(!user.isEnabled()) throw new ApiException(CustomHttpStatus.USER_NOT_ACTIVE);
+
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(),
                 user.getPassword());
 
@@ -147,5 +154,65 @@ public class AuthenticationServiceImpl implements AuthenticationInterface {
             stringJoiner.add(user.getRole().getName());
         }
         return stringJoiner.toString();
+    }
+
+    @Override
+    public ApiResponse resetPassword(String email) {
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "email", email));
+
+        String token = UUID.randomUUID().toString();
+        passwordResetTokenRepository.save(
+                new PasswordResetToken(token, LocalDateTime.now(), user)
+        );
+
+        String url = "http://localhost:9999/api/auth/change-password?email=" + email+  "&token=" + token;
+        AppConstant.sendEmail(user, url, AppConstant.SUBJECT_RESET, AppConstant.CONTENT_RESET);
+
+        return new ApiResponse("Vui lòng kiểm tra email của bạn và làm theo hướng dẫn!");
+    }
+
+    @Override
+    public ApiResponse authToken(String token) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
+                .orElseThrow(() -> new ApiException(CustomHttpStatus.TOKEN_NOT_EXISTED));
+
+        if(passwordResetToken.getExpiryDate().isBefore(LocalDateTime.now())){
+            throw new ApiException(CustomHttpStatus.TOKEN_EXPIRED);
+        }
+
+        if(passwordResetToken.isActive()){
+            throw new ApiException(CustomHttpStatus.TOKEN_IS_ACTIVE);
+        }
+
+        passwordResetTokenRepository.updateActive(token);
+
+        return new ApiResponse("Xác thực tài khoản thành công!");
+    }
+
+    @Override
+    public ApiResponse savePassword(ChangePassword changePassword) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(changePassword.getToken())
+                .orElseThrow(() -> new ApiException(CustomHttpStatus.TOKEN_NOT_EXISTED));
+
+        if(passwordResetToken.getExpiryDate().isBefore(LocalDateTime.now())){
+            throw new ApiException(CustomHttpStatus.TOKEN_EXPIRED);
+        }
+
+        User user = passwordResetToken.getUser();
+
+        boolean checkOldPass = passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword());
+        boolean compareOldToNewPassword = passwordEncoder.matches(changePassword.getNewPassword(), user.getPassword());
+        if(!checkOldPass){
+            throw new ApiException(CustomHttpStatus.NOT_MATCH_PASSWORD);
+        }
+        if(compareOldToNewPassword){
+            throw new ApiException(CustomHttpStatus.OLD_DUPLICATE_NEW_PASSWORD);
+        }
+
+        String passwordEncode = passwordEncoder.encode(changePassword.getNewPassword());
+        user.setPassword(passwordEncode);
+        userRepository.save(user);
+        return new ApiResponse("Thay đổi mật khẩu thành công");
     }
 }

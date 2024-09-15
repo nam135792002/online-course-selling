@@ -6,9 +6,10 @@ import vn.edu.likelion.model.user.UserInfoResponse;
 import vn.edu.likelion.model.user.UserRegisterRequest;
 import vn.edu.likelion.model.user.UserRegisterResponse;
 
-public interface UserInterface {
+public interface IUserService {
     UserRegisterResponse addUser(UserRegisterRequest userRegisterRequest);
     ApiResponse verifyEmail(String email);
     UserInfoResponse getMyInfo();
     UserInfoResponse updateUser(String fullName, MultipartFile thumbnail);
+    ApiResponse changePassword(String oldPassword, String newPassword);
 }

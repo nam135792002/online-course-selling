@@ -5,9 +5,7 @@ spring:
   application:
     name: course-online-selling
   profiles:
-    active: prod
-  mail:
-    password: ${MAIL_APP_PASSWORD}
+    active: dev
 
 springdoc:
   api-docs:

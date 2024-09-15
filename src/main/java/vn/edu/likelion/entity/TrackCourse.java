@@ -31,7 +31,7 @@ public class TrackCourse {
     private boolean isUnlock;
 
     @Column(name = "is_current")
-    private boolean isCurrent = false;
+    private boolean isCurrent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

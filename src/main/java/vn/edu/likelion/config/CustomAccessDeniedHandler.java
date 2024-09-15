@@ -17,6 +17,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.setStatus(CustomHttpStatus.UNAUTHORIZED.getHttpStatusCode().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
 
         ErrorDetails errorDetails = new ErrorDetails();
         errorDetails.setStatus(CustomHttpStatus.UNAUTHORIZED.getCode());
